@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <meta charset="UTF-8">
+    <title>{% block title %}Verdad o Reto{% endblock %}</title>
+    <style>
+        nav a, nav form button {
+            margin-right: 10px;
+            text-decoration: none;
+            color: blue;
+        }
+        nav form {
+            display: inline;
+        }
+        nav form button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .flash { margin: 10px 0; }
+        .flash .msg {
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid transparent;
+        }
+        .flash .msg.success { background: #e6ffed; border-color: #b7eb8f; }
+        .flash .msg.error   { background: #fff1f0; border-color: #ffa39e; }
+        .flash .msg.info    { background: #e6f7ff; border-color: #91d5ff; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Inicio</a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}">Mis packs</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Salir</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Entrar</a>
+            <a href="{% url 'registro' %}">Registrarse</a>
+        {% endif %}
+    </nav>    
+
+    <hr>
+
+    {% if messages %}
+        <div class="flash">
+            {% for message in messages %}
+                <div class="msg {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+</body>
+</html>

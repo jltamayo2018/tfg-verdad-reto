@@ -1,0 +1,24 @@
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('registro/', views.registro, name='registro'),
+
+    # áreas privadas (requieren login)
+    path('dashboard/', views.dashboard, name='dashboard'),
+    path('packs/new/', views.pack_create, name='pack_create'),
+    path('packs/<int:pk>/', views.pack_detail, name='pack_detail'),
+    path('packs/<int:pk>/qr/<str:kind>.png', views.qr_image, name='qr_image'),
+    path('packs/<int:pk>/links/regenerate/<str:kind>/', views.link_regenerate, name='link_regenerate'),
+    
+    # acciones dentro de un pack
+    path('packs/<int:pk>/actions/new/<str:tipo>/', views.action_create, name='action_create'),
+    path('packs/<int:pk>/actions/<int:accion_id>/edit/', views.action_edit, name='action_edit'),
+    path('packs/<int:pk>/actions/<int:accion_id>/toggle/', views.action_toggle, name='action_toggle'),
+    path('packs/<int:pk>/actions/<int:accion_id>/delete/', views.action_delete, name='action_delete'),
+
+    # pública por token
+    path('q/<str:token>/', views.publico_por_token, name='publico_por_token'),
+
+]

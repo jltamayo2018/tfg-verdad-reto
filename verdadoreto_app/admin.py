@@ -1,0 +1,19 @@
+from django.contrib import admin
+from .models import Pack, Action
+
+@admin.register(Pack)
+class PackAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'creation_date')
+    search_fields = ('name', 'owner__username')
+    list_filter = ('creation_date', 'owner')
+    readonly_fields = ('token_verdad', 'token_reto')
+
+@admin.register(Action)
+class ActionAdmin(admin.ModelAdmin):
+    list_display = ('get_type_display', 'text_short', 'pack', 'active', 'created_at')
+    list_filter = ('type', 'active', 'created_at', 'pack')
+    search_fields = ('text', 'pack__name')
+
+    def text_short(self, obj):
+        return (obj.text[:60] + '…') if len(obj.text) > 60 else obj.text
+    text_short.short_description = 'Texto'

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Mis packs{% endblock %}
+
+{% block content %}
+  <h2>Mis packs</h2>
+
+  <p>
+    <a class="btn btn-primary" href="{% url 'pack_create' %}">+ Crear nuevo pack</a>
+  </p>
+
+  <div class="card">
+    {% if packs %}
+      <ul class="list">
+        {% for p in packs %}
+          <li>
+            <a href="{% url 'pack_detail' p.pk %}">{{ p.name }}</a>
+            <small class="muted"> · creado {{ p.creado_en|date:"d/m/Y H:i" }}</small>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="muted">Aún no tienes packs. Crea el primero.</p>
+    {% endif %}
+  </div>
+{% endblock %}
