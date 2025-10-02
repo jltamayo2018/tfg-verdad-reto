@@ -50,6 +50,36 @@ def pack_create(request):
     return render(request, 'pack_form.html', {'form': form})
 
 @login_required
+def pack_rename(request, pk):
+    pack = get_object_or_404(Pack, pk=pk, owner=request.user)
+    if request.method == 'POST':
+        form = PackForm(request.POST, instance=pack)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Nombre del pack actualizado.")
+            return redirect('dashboard')
+    else:
+        form = PackForm(instance=pack)
+
+    # podemos reutilizar tu pack_form.html cambiando el título
+    return render(request, 'pack_form.html', {
+        'form': form,
+        'pack': pack,
+    })
+
+@login_required
+def pack_delete(request, pk):
+    pack = get_object_or_404(Pack, pk=pk, owner=request.user)
+    if request.method == 'POST':
+        nombre = pack.name
+        pack.delete()
+        messages.success(request, f'Pack "{nombre}" eliminado.')
+        return redirect('dashboard')
+    # Si alguien llega por GET, redirigimos por seguridad
+    messages.info(request, "Para eliminar un pack, usa el botón de borrar.")
+    return redirect('dashboard')
+
+@login_required
 def pack_detail(request, pk):
     pack = get_object_or_404(Pack, pk=pk, owner=request.user)
     verdades = Action.objects.filter(pack=pack, type=Action.Type.VERDAD).order_by('-created_at')
@@ -154,9 +184,11 @@ def publico_por_token(request, token):
 
     return render(request, 'publico.html', {
         'pack': pack,
-        'type': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
+        'tipo': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
         'accion': accion,
         'token': token,
+        'token_verdad': pack.token_verdad,
+        'token_reto': pack.token_reto,
     })
 
 # Opción copilot, muestra el QR en el navegador y lo tienes que guardar tú manualmente

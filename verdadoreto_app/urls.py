@@ -18,6 +18,10 @@ urlpatterns = [
     path('packs/<int:pk>/actions/<int:accion_id>/toggle/', views.action_toggle, name='action_toggle'),
     path('packs/<int:pk>/actions/<int:accion_id>/delete/', views.action_delete, name='action_delete'),
 
+    # gestión del pack
+    path('packs/<int:pk>/rename/', views.pack_rename, name='pack_rename'),
+    path('packs/<int:pk>/delete/', views.pack_delete, name='pack_delete'),
+
     # pública por token
     path('q/<str:token>/', views.publico_por_token, name='publico_por_token'),
 

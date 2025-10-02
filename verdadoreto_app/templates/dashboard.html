@@ -2,24 +2,60 @@
 {% block title %}Mis packs{% endblock %}
 
 {% block content %}
-  <h2>Mis packs</h2>
+  <div class="container">
+    <h2 class="neon-title">Mis packs</h2>
 
-  <p>
-    <a class="btn btn-primary" href="{% url 'pack_create' %}">+ Crear nuevo pack</a>
-  </p>
+    <p>
+      <a class="btn btn-primary btn-wide" href="{% url 'pack_create' %}">
+        + Crear nuevo pack
+      </a>
+    </p>
 
-  <div class="card">
     {% if packs %}
-      <ul class="list">
+      <section class="packs-grid" aria-label="Cuadrícula de packs">
         {% for p in packs %}
-          <li>
-            <a href="{% url 'pack_detail' p.pk %}">{{ p.name }}</a>
-            <small class="muted"> · creado {{ p.creado_en|date:"d/m/Y H:i" }}</small>
-          </li>
+          <!-- Contenedor relativo para superponer los botones sin meterlos dentro del <a> -->
+          <div class="pack-card-wrap" style="position:relative;">
+            <!-- La tarjeta sigue siendo un <a>; clic en cualquier parte va al detalle -->
+            <a href="{% url 'pack_detail' p.pk %}"
+               class="pack-card neon-card"
+               aria-label="Abrir pack {{ p.name }}">
+              <div class="neon">{{ p.name }}</div>
+              {% if p.creation_date %}
+                <div class="pack-meta">{{ p.creation_date|date:"d/m/Y H:i" }}</div>
+              {% endif %}
+            </a>
+
+            <!-- Botones: fuera del <a>, posicionados en esquina inferior der -->
+            <div class="pack-tools" style="position:absolute; right:12px; bottom:12px; display:inline-flex; gap:8px; z-index:2;">
+              <a href="{% url 'pack_rename' p.pk %}"
+                 class="icon-btn"
+                 title="Editar nombre"
+                 aria-label="Editar nombre">
+                <span aria-hidden="true">✏️</span>
+              </a>
+
+              <form action="{% url 'pack_delete' p.pk %}"
+                    method="post"
+                    class="inline"
+                    style="margin:0;">
+                {% csrf_token %}
+                <button type="submit"
+                        class="icon-btn danger"
+                        title="Eliminar pack"
+                        aria-label="Eliminar pack"
+                        onclick="return confirm('¿Seguro que quieres eliminar este pack?');">
+                  <span aria-hidden="true">🗑️</span>
+                </button>
+              </form>
+            </div>
+          </div>
         {% endfor %}
-      </ul>
+      </section>
     {% else %}
-      <p class="muted">Aún no tienes packs. Crea el primero.</p>
+      <div class="card">
+        <p class="muted">Aún no tienes packs. Crea el primero.</p>
+      </div>
     {% endif %}
   </div>
 {% endblock %}

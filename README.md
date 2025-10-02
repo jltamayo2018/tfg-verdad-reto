@@ -35,5 +35,12 @@ Hoja de estilos css creada, aspecto visual neón implementado.
 
 29/09/25
 
+Mejoras visuales en la web.
+No hay desbordamiento horizontal, está centrado.
+Página "Mis packs" mejorada considerablemente, ya no aparece como una lista, los packs aparecen en cuadrados, 2 por fila.
+Página de detalles del pack mejorada considerablemente, vistosa, acordeones...
 
+30/09/25
+
+Mejoras estéticas y funcionales en muchasde las páginas de la web
 

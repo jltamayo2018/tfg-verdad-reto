@@ -2,95 +2,129 @@
 {% block title %}{{ pack.name }}{% endblock %}
 
 {% block content %}
-  <h2>{{ pack.name }}</h2>
+  <h2 class="neon-title">{{ pack.name }}</h2>
   <p><a class="btn btn-ghost" href="{% url 'dashboard' %}">← Volver a mis packs</a></p>
 
-  <div class="card">
+  <!-- ACCIONES DEL PACK -->
+  <div class="card neon-card pack-detail">
     <h3>Acciones del pack</h3>
 
-    <h4>Verdad</h4>
-    <p><a class="btn btn-primary" href="{% url 'action_create' pack.pk 'verdad' %}">+ Añadir Verdad</a></p>
-    {% if verdades %}
-      <ul class="list">
-        {% for a in verdades %}
-          <li>
-            {% if not a.active %}<em class="muted">(inactiva)</em> {% endif %}
-            {{ a.text|default:"(sin texto)" }}
-            —
-            <a href="{% url 'action_edit' pack.pk a.pk %}">Editar</a>
-            |
-            <form method="post" action="{% url 'action_toggle' pack.pk a.pk %}" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-ghost" style="padding:0 4px;">
-                {% if a.active %}Desactivar{% else %}Activar{% endif %}
-              </button>
-            </form>
-            |
-            <a href="{% url 'action_delete' pack.pk a.pk %}">Borrar</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="muted">No hay verdades todavía.</p>
-    {% endif %}
+    <!-- VERDAD -->
+    <details class="accordion">
+      <summary class="accordion-header">
+        <span class="chip chip-truth">Preguntas</span>
+        <a class="btn btn-primary btn-sm" href="{% url 'action_create' pack.pk 'verdad' %}">+ Añadir Pregunta</a>
+      </summary>
 
-    <h4 style="margin-top:24px;">Reto</h4>
-    <p><a class="btn btn-primary" href="{% url 'action_create' pack.pk 'reto' %}">+ Añadir Reto</a></p>
-    {% if retos %}
-      <ul class="list">
-        {% for a in retos %}
-          <li>
-            {% if not a.active %}<em class="muted">(inactiva)</em> {% endif %}
-            {{ a.text|default:"(sin texto)" }}
-            —
-            <a href="{% url 'action_edit' pack.pk a.pk %}">Editar</a>
-            |
-            <form method="post" action="{% url 'action_toggle' pack.pk a.pk %}" style="display:inline;">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-ghost" style="padding:0 4px;">
-                {% if a.active %}Desactivar{% else %}Activar{% endif %}
-              </button>
-            </form>
-            |
-            <a href="{% url 'action_delete' pack.pk a.pk %}">Borrar</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="muted">No hay retos todavía.</p>
-    {% endif %}
+      {% if verdades %}
+        <ul class="list-clean">
+          {% for a in verdades %}
+            <li class="action-item">
+              <div class="action-text">
+                {% if not a.active %}
+                  <span class="badge badge-inactive">(inactiva)</span>
+                {% endif %}
+                {{ a.text|default:"(sin texto)" }}
+              </div>
+
+              <div class="action-tools">
+                <a class="icon-btn" href="{% url 'action_edit' pack.pk a.pk %}" title="Editar" aria-label="Editar">✏️</a>
+
+                <form method="post" action="{% url 'action_toggle' pack.pk a.pk %}" class="inline">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="icon-btn"
+                          title="{% if a.active %}Desactivar{% else %}Activar{% endif %}"
+                          aria-label="{% if a.active %}Desactivar{% else %}Activar{% endif %}">
+                    {% if a.active %}⛔{% else %}✅{% endif %}
+                  </button>
+                </form>
+
+                <a class="icon-btn danger" href="{% url 'action_delete' pack.pk a.pk %}" title="Borrar" aria-label="Borrar">🗑️</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No hay verdades todavía.</p>
+      {% endif %}
+    </details>
+
+    <!-- RETO -->
+    <details class="accordion">
+      <summary class="accordion-header">
+        <span class="chip chip-dare">Retos</span>
+        <a class="btn btn-primary btn-sm" href="{% url 'action_create' pack.pk 'reto' %}">+ Añadir Reto</a>
+      </summary>
+
+      {% if retos %}
+        <ul class="list-clean">
+          {% for a in retos %}
+            <li class="action-item">
+              <div class="action-text">
+                {% if not a.active %}
+                  <span class="badge badge-inactive">(inactiva)</span>
+                {% endif %}
+                {{ a.text|default:"(sin texto)" }}
+              </div>
+
+              <div class="action-tools">
+                <a class="icon-btn" href="{% url 'action_edit' pack.pk a.pk %}" title="Editar" aria-label="Editar">✏️</a>
+
+                <form method="post" action="{% url 'action_toggle' pack.pk a.pk %}" class="inline">
+                  {% csrf_token %}
+                  <button type="submit"
+                          class="icon-btn"
+                          title="{% if a.active %}Desactivar{% else %}Activar{% endif %}"
+                          aria-label="{% if a.active %}Desactivar{% else %}Activar{% endif %}">
+                    {% if a.active %}⛔{% else %}✅{% endif %}
+                  </button>
+                </form>
+
+                <a class="icon-btn danger" href="{% url 'action_delete' pack.pk a.pk %}" title="Borrar" aria-label="Borrar">🗑️</a>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">No hay retos todavía.</p>
+      {% endif %}
+    </details>
   </div>
 
-  <div class="card" style="margin-top:24px;">
+  <!-- ENLACES PÚBLICOS -->
+  <div class="card neon-card public-links">
     <h3>Enlaces públicos</h3>
 
-    <div style="margin-bottom:1rem;">
-      <h4>Verdad</h4>
+    <div class="public-block">
+      <h4>Preguntas</h4>
       <p>
-        <a id="link-verdad" href="{% url 'publico_por_token' pack.token_verdad %}" target="_blank">
-          {% url 'publico_por_token' pack.token_verdad %}
+        <a id="link-verdad" href="{% url 'publico_por_token' pack.token_verdad %}">
+          ¿Comenzamos con las preguntas?
         </a>
         · <a href="{% url 'qr_image' pack.pk 'verdad' %}">Descargar QR</a>
       </p>
-      <form method="post" action="{% url 'link_regenerate' pack.pk 'verdad' %}">
+      <form method="post" action="{% url 'link_regenerate' pack.pk 'verdad' %}" class="inline">
         {% csrf_token %}
-        <button type="submit" class="btn" onclick="return confirm('¿Regenerar enlace de Verdad? El anterior dejará de funcionar.')">
+        <button type="submit" class="btn btn-secondary btn-sm"
+                onclick="return confirm('¿Regenerar enlace de Verdad? El anterior dejará de funcionar.')">
           Regenerar enlace
         </button>
       </form>
     </div>
 
-    <div>
-      <h4>Reto</h4>
+    <div class="public-block">
+      <h4>Retos</h4>
       <p>
-        <a id="link-reto" href="{% url 'publico_por_token' pack.token_reto %}" target="_blank">
-          {% url 'publico_por_token' pack.token_reto %}
+        <a id="link-reto" href="{% url 'publico_por_token' pack.token_reto %}">
+          ¿Preparados para los retos?
         </a>
         · <a href="{% url 'qr_image' pack.pk 'reto' %}">Descargar QR</a>
       </p>
-      <form method="post" action="{% url 'link_regenerate' pack.pk 'reto' %}">
+      <form method="post" action="{% url 'link_regenerate' pack.pk 'reto' %}" class="inline">
         {% csrf_token %}
-        <button type="submit" class="btn" onclick="return confirm('¿Regenerar enlace de Reto? El anterior dejará de funcionar.')">
+        <button type="submit" class="btn btn-secondary btn-sm"
+                onclick="return confirm('¿Regenerar enlace de Reto? El anterior dejará de funcionar.')">
           Regenerar enlace
         </button>
       </form>

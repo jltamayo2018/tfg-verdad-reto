@@ -2,15 +2,16 @@
 <html lang="es">
 <head>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7">
 
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Verdad o Reto{% endblock %}</title>
     <style>
         nav a, nav form button {
             margin-right: 10px;
             text-decoration: none;
-            color: blue;
+            color: rgb(255, 255, 255);
         }
         nav form {
             display: inline;
@@ -29,8 +30,8 @@
             margin-bottom: 6px;
             border: 1px solid transparent;
         }
-        .flash .msg.success { background: #e6ffed; border-color: #b7eb8f; }
-        .flash .msg.error   { background: #fff1f0; border-color: #ffa39e; }
+        .flash .msg.success { background: #0dcf44; border-color: #65e603; }
+        .flash .msg.error   { background: #ff1100; border-color: #ffa39e; }
         .flash .msg.info    { background: #e6f7ff; border-color: #91d5ff; }
     </style>
 </head>

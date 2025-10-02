@@ -4,16 +4,24 @@
 {% block content %}
   <div class="public-wrap">
     <div class="card public-card neon-card">
-      <div class="chip {% if tipo|lower == 'verdad' %}chip-truth{% else %}chip-dare{% endif %}">
-        {{ tipo|upper }}
-      </div>
+      <header class="public-head">
+        <div class="chip {% if tipo|lower == 'verdad' %}chip-truth{% else %}chip-dare{% endif %}">
+          {{ tipo|upper }}
+        </div>
+      </header>
 
       {% if accion %}
         <div class="public-action">{{ accion.text }}</div>
 
-        <form method="get" action="{% url 'publico_por_token' token %}">
-          <button type="submit" class="btn btn-secondary">Mostrar otra</button>
+        <form method="get" action="{% url 'publico_por_token' token %}" class="public-cta">
+          <button type="submit" class="btn btn-secondary btn-wide">Siguiente</button>
         </form>
+
+        {% if tipo|lower == "verdad" %}
+          <a href="{% url 'publico_por_token' token_reto %}" class="btn btn-secondary btn-wide">RETOS</a>
+        {% else %}
+          <a href="{% url 'publico_por_token' token_verdad %}" class="btn btn-toggle">PREGUNTAS</a>
+        {% endif %}
       {% else %}
         <p class="muted">No hay {{ tipo|lower }} activas en este pack.</p>
       {% endif %}

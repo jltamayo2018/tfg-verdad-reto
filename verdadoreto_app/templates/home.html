@@ -1,16 +1,43 @@
 {% extends 'base.html' %}
-
-{% block title %}Inicio{% endblock %}
+{% block title %}Verdad o Reto{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <h1 class="title">TFG<br>Verdad o Reto</h1>
+<div class="hero hero-center">
+    <div class="hero-inner">
+        <h1 class="neon-heading">
+            <!--<span class="neon-kicker">TFG</span>-->
+            <span class="neon-title">Verdad o Reto</span>
+        </h1>
 
-    <div class="actions">
-        <!--
-        <a href="{% url 'dashboard' %}" class="btn btn-primary">Jugar ahora</a>
-        <a href="{% url 'login' %}" class="btn btn-secondary">Escanear QR</a>
-        -->
+        <br />
+
+        <!--<p class="hero-subtitle">
+        Crea tus <strong>packs</strong>, comparte o descarga <strong>QR</strong> y
+        <strong>juega con tus amigos</strong> en segundos.
+        </p>-->
+
+        <ul class="features">
+        <li class="feature neon-card">
+            <div class="feature-emoji">🧰</div>
+            <div class="feature-text">Crea y organiza tus packs</div>
+        </li>
+        <li class="feature neon-card">
+            <div class="feature-emoji">🔗</div>
+            <div class="feature-text">Comparte enlaces o códigos QR</div>
+        </li>
+        <li class="feature neon-card">
+            <div class="feature-emoji">🎉</div>
+            <div class="feature-text">Disfruta con tus amigos desde cualquier dispositivo</div>
+        </li>
+        </ul>
+
+        <br />
+
+        <div class="actions">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-wide">Jugar ahora</a>
+        {# Si quieres mostrar un segundo CTA, descomenta: #}
+        {# <a href="{% url 'pack_create' %}" class="btn btn-secondary btn-wide">Crear mi primer pack</a> #}
+        </div>
     </div>
 </div>
 {% endblock %}

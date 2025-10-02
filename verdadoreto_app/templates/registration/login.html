@@ -1,15 +1,64 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block title %}Iniciar sesión{% endblock %}
 
 {% block content %}
-<h2>Iniciar sesión</h2>
+<div class="auth-wrap">
+  <div class="auth-card neon-card">
+    <h1 class="auth-title">Iniciar sesión</h1>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Entrar</button>
-</form>
+    <form method="post" class="auth-form" novalidate>
+      {% csrf_token %}
 
-<p>¿No tienes cuenta? <a href="/registro/">Regístrate aquí</a></p>
+      {# Errores generales (credenciales inválidas, etc.) #}
+      {% if form.non_field_errors %}
+        <div class="field-errors" role="alert">
+          {% for e in form.non_field_errors %}<p>{{ e }}</p>{% endfor %}
+        </div>
+      {% endif %}
+
+      <div class="form-row">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {% for e in form.username.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+      </div>
+
+      <div class="form-row">
+        {{ form.password.label_tag }}
+        <div class="input-icon">
+          {{ form.password }}
+          <button type="button" class="icon-btn" id="togglePass" aria-label="Mostrar u ocultar contraseña" aria-pressed="false">
+            <!-- icono ojo -->
+            <svg class="icon-eye" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 5c5 0 9.27 3.11 11 7-1.73 3.89-6 7-11 7S2.73 15.89 1 12c1.73-3.89 6-7 11-7zm0 3a4 4 0 100 8 4 4 0 000-8z"/>
+            </svg>
+          </button>
+        </div>
+        {% for e in form.password.errors %}<p class="field-error">{{ e }}</p>{% endfor %}
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+    </form>
+
+    <p class="aux-text">
+      ¿No tienes cuenta?
+      <a class="link-neon" href="/registro/">Regístrate aquí</a>
+    </p>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const toggle = document.getElementById('togglePass');
+    const input = document.getElementById('{{ form.password.id_for_label }}') || document.querySelector('input[type="password"]');
+
+    if (toggle && input) {
+      toggle.addEventListener('click', () => {
+        const isPassword = input.getAttribute('type') === 'password';
+        input.setAttribute('type', isPassword ? 'text' : 'password');
+        toggle.setAttribute('aria-pressed', String(isPassword));
+        toggle.classList.toggle('is-active', isPassword);
+      });
+    }
+  })();
+</script>
 {% endblock %}

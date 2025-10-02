@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure--iv4pj&sa&^$g97%%43&t=4pv#(!j)27tbq*pb36mnn6&01-64
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.36', '192.168.91.174']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'verdadoreto_app',
+    'verdadoreto_app.apps.VerdadoretoAppConfig',
 ]
 
 MIDDLEWARE = [
