@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Error del servidor{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <h1>💥 ¡Ups! Algo salió mal (500)</h1>
+  <p>El servidor ha tenido un problema interno. Inténtalo más tarde.</p>
+  <a href="{% url 'home' %}" class="btn btn-primary">Volver al inicio</a>
+</div>
+{% endblock %}

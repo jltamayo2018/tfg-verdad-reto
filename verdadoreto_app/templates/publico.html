@@ -4,7 +4,7 @@
 {% block content %}
   <div class="public-wrap">
     <div class="card public-card neon-card">
-      <header class="public-head">
+      <header class="public-head" role="banner">
         <div class="chip {% if tipo|lower == 'verdad' %}chip-truth{% else %}chip-dare{% endif %}">
           {{ tipo|upper }}
         </div>
@@ -12,19 +12,16 @@
 
       {% if accion %}
         <div class="public-action">{{ accion.text }}</div>
-
-        <form method="get" action="{% url 'publico_por_token' token %}" class="public-cta">
-          <button type="submit" class="btn btn-secondary btn-wide">Siguiente</button>
-        </form>
-
-        {% if tipo|lower == "verdad" %}
-          <a href="{% url 'publico_por_token' token_reto %}" class="btn btn-secondary btn-wide">RETOS</a>
-        {% else %}
-          <a href="{% url 'publico_por_token' token_verdad %}" class="btn btn-toggle">PREGUNTAS</a>
-        {% endif %}
       {% else %}
         <p class="muted">No hay {{ tipo|lower }} activas en este pack.</p>
       {% endif %}
+
+      <!-- CTA agrupadas: dos botones fijos + "Siguiente" que conserva el tipo -->
+      <div class="public-cta" role="group" aria-label="Acciones">
+        <!-- Alternar tipo -->
+        <a href="{% url 'publico_por_token' token %}?t=verdad" class="btn btn-secondary btn-wide">Verdad</a>
+        <a href="{% url 'publico_por_token' token %}?t=reto" class="btn btn-primary btn-wide">Reto</a>
+      </div>
     </div>
   </div>
 {% endblock %}

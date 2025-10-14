@@ -1,6 +1,12 @@
 from django.urls import path
 from . import views
 
+handler400 = "verdadoreto.views.handler400"
+handler403 = "verdadoreto.views.handler403"
+handler404 = "verdadoreto.views.handler404"
+handler500 = "verdadoreto.views.handler500"
+
+
 urlpatterns = [
     path('', views.home, name='home'),
     path('registro/', views.registro, name='registro'),
@@ -9,8 +15,8 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('packs/new/', views.pack_create, name='pack_create'),
     path('packs/<int:pk>/', views.pack_detail, name='pack_detail'),
-    path('packs/<int:pk>/qr/<str:kind>.png', views.qr_image, name='qr_image'),
-    path('packs/<int:pk>/links/regenerate/<str:kind>/', views.link_regenerate, name='link_regenerate'),
+    path('packs/<int:pk>/qr.png', views.qr_image, name='qr_image'),
+    path('packs/<int:pk>/links/regenerate/', views.link_regenerate, name='link_regenerate'),
     
     # acciones dentro de un pack
     path('packs/<int:pk>/actions/new/<str:tipo>/', views.action_create, name='action_create'),

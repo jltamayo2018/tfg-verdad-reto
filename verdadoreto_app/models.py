@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import secrets
-import string
+import secrets, string
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 # función para generar un token aleatorio para los enlaces de los packs
 def generar_token(length=22):
@@ -10,20 +10,30 @@ def generar_token(length=22):
 
 # Modelo para representar un Pack asociado a un usuario
 class Pack(models.Model):
+    class Category(models.TextChoices):
+        PICANTE = "🔥 PICANTE", "🔥 Picante"
+        FIESTA = "🎉 FIESTA", "🎉 Fiesta"
+        FAMILIAR = "👪 FAMILIAR", "👪 Familiar"
+        ROMANTICO = "❤️ ROMÁNTICO", "❤️ Romántico"
+        RANDOM = "🎲 RANDOM", "🎲 Random"
+
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='packs')
     name = models.CharField(max_length=120)
     creation_date = models.DateTimeField(auto_now_add=True)
 
-    # Dos identificadores públicos, uno por tipo
-    token_verdad = models.CharField(max_length=32, unique=True, editable=False, blank=True)
-    token_reto   = models.CharField(max_length=32, unique=True, editable=False, blank=True)
+    # Único identificador público
+    token = models.CharField(max_length=32, unique=True, editable=False, db_index=True)
+    
+    category = models.CharField(max_length=12, choices=Category.choices, default=Category.RANDOM)
+    level = models.PositiveSmallIntegerField(
+        default=3,
+        validators=[MinValueValidator(1), MaxValueValidator(5)]
+    )
 
     def save(self, *args, **kwargs):
-        # Genera tokens solo si no existen aún
-        if not self.token_verdad:
-            self.token_verdad = generar_token()
-        if not self.token_reto:
-            self.token_reto = generar_token()
+        # Genera el token principal solo si no existe aún
+        if not self.token:
+            self.token = generar_token()
         super().save(*args, **kwargs)
 
     @staticmethod
@@ -31,22 +41,18 @@ class Pack(models.Model):
         # Reintenta hasta asegurar unicidad
         while True:
             t = generar_token()
-            if not Pack.objects.filter(models.Q(token_verdad=t) | models.Q(token_reto=t)).exists():
+            if not Pack.objects.filter(
+                models.Q(token=t)
+            ).exists():
                 return t
 
     def __str__(self):
         return f"{self.name} (de {self.owner.username})"
 
-    def regenerate(self, kind: str):
-        kind = kind.lower()
-        if kind == 'verdad':
-            self.token_verdad = self._token_unico()
-            self.save(update_fields=['token_verdad'])
-        elif kind == 'reto':
-            self.token_reto = self._token_unico()
-            self.save(update_fields=['token_reto'])
-        else:
-            raise ValueError("kind debe ser 'verdad' o 'reto'")
+
+    def regenerate_unified(self):
+        self.token = self._token_unico()
+        self.save(update_fields=['token'])
 
 # Modelo para representar una Acción (Verdad o Reto) dentro de un Pack
 class Action(models.Model):

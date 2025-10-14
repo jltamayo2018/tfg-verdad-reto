@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load pack_extras %}
 {% block title %}Mis packs{% endblock %}
 
 {% block content %}
@@ -16,21 +17,30 @@
         {% for p in packs %}
           <!-- Contenedor relativo para superponer los botones sin meterlos dentro del <a> -->
           <div class="pack-card-wrap" style="position:relative;">
-            <!-- La tarjeta sigue siendo un <a>; clic en cualquier parte va al detalle -->
-            <a href="{% url 'pack_detail' p.pk %}"
+            <!-- Al clickear sobre la tarjeta te lleva a la página pública -->
+            <a href="{% url 'publico_por_token' p.token %}"
                class="pack-card neon-card"
-               aria-label="Abrir pack {{ p.name }}">
-              <div class="neon">{{ p.name }}</div>
-              {% if p.creation_date %}
-                <div class="pack-meta">{{ p.creation_date|date:"d/m/Y H:i" }}</div>
-              {% endif %}
+               aria-label="Jugar pack {{ p.name }}">
+              <header class="pack-card__head">
+                <h3 class="pack-card__title">{{ p.name }}</h3>
+              </header>
+              
+              <!-- Emoji centrado (toma el emoji del label de la choice) -->
+              {% with label=p.get_category_display %}
+                <div class="pack-card__emoji">{{ label|slice:":1" }}</div>
+              {% endwith %}
+
+              <!-- Estrellas abajo-izquierda -->
+              <div class="pack-card__level">
+                <span class="stars">{% stars p.level 5 %}</span>
+              </div>
             </a>
 
-            <!-- Botones: fuera del <a>, posicionados en esquina inferior der -->
+            <!-- Botones flotantes (editar y eliminar pack) -->
             <div class="pack-tools" style="position:absolute; right:12px; bottom:12px; display:inline-flex; gap:8px; z-index:2;">
-              <a href="{% url 'pack_rename' p.pk %}"
+              <a href="{% url 'pack_detail' p.pk %}"
                  class="icon-btn"
-                 title="Editar nombre"
+                 title="Detalles del pack"
                  aria-label="Editar nombre">
                 <span aria-hidden="true">✏️</span>
               </a>

@@ -57,7 +57,7 @@ def pack_rename(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, "Nombre del pack actualizado.")
-            return redirect('dashboard')
+            return redirect('pack_detail', pk=pack.pk)
     else:
         form = PackForm(instance=pack)
 
@@ -169,26 +169,27 @@ def action_delete(request, pk, accion_id):
     })
 
 def publico_por_token(request, token):
-    # 1) Detectar si el token es de VERDAD o RETO
-    pack = Pack.objects.filter(token_verdad=token).first()
-    tipo = Action.Type.VERDAD
-    if not pack:
-        pack = Pack.objects.filter(token_reto=token).first()
+    # 1) Buscar el pack por el token único
+    pack = get_object_or_404(Pack, token=token)
+    
+    # 2) Determinar el tipo según el parámetro GET (?t=verdad o ?t=reto)
+    tipo_param = (request.GET.get('t') or '').lower()
+    if tipo_param == 'reto':
         tipo = Action.Type.RETO
-    if not pack:
-        raise Http404("Enlace no válido")
+    else:
+        # por defecto mostramos 'Verdad'
+        tipo = Action.Type.VERDAD
 
-    # 2) Sacar una acción aleatoria activa del tipo correspondiente
+    # 3) Elegir una acción aleatoria activa del tipo correspondiente
     acciones = list(Action.objects.filter(pack=pack, type=tipo, active=True))
     accion = random.choice(acciones) if acciones else None
 
+    # 4) Renderizar la plantilla pública
     return render(request, 'publico.html', {
         'pack': pack,
         'tipo': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
         'accion': accion,
-        'token': token,
-        'token_verdad': pack.token_verdad,
-        'token_reto': pack.token_reto,
+        'token': pack.token,  # usamos siempre el nuevo token unificado
     })
 
 # Opción copilot, muestra el QR en el navegador y lo tienes que guardar tú manualmente
@@ -227,19 +228,12 @@ def qr_image(request, pk, kind):
 '''
 
 @login_required
-def qr_image(request, pk, kind):
-    kind = kind.lower()
-    if kind not in ('verdad', 'reto'):
-        raise Http404("Tipo inválido")
-
+def qr_image(request, pk):
     # pack debe pertenecer al usuario logueado
     pack = get_object_or_404(Pack, pk=pk, owner=request.user)
 
-    # token correcto según tipo
-    token = pack.token_verdad if kind == 'verdad' else pack.token_reto
-
-    # URL pública absoluta (usa reverse para mantener las URL centralizadas)
-    public_url = request.build_absolute_uri(reverse('publico_por_token', args=[token]))
+    # URL pública con el token único
+    public_url = request.build_absolute_uri(reverse('publico_por_token', args=[pack.token]))
 
     # Generar QR en memoria con control de parámetros
     qr = qrcode.QRCode(
@@ -259,17 +253,26 @@ def qr_image(request, pk, kind):
 
     # Devolver PNG como descarga (Content-Disposition sugiere nombre de archivo)
     resp = HttpResponse(buf.getvalue(), content_type='image/png')
-    resp['Content-Disposition'] = f'attachment; filename="qr_{kind}_pack{pack.pk}.png"'
+    resp['Content-Disposition'] = f'attachment; filename="qr_pack{pack.pk}.png"'
     return resp
 
 @require_POST
 @login_required
-def link_regenerate(request, pk, kind):
-    kind = kind.lower()
-    if kind not in ('verdad', 'reto'):
-        raise Http404("Tipo inválido")
+def link_regenerate(request, pk):
 
     pack = get_object_or_404(Pack, pk=pk, owner=request.user)
-    pack.regenerate(kind)  # invalida el anterior y crea un token nuevo
-    messages.success(request, f"Enlace de { 'Verdad' if kind=='verdad' else 'Reto' } regenerado.")
+    pack.regenerate_unified()  # invalida el anterior y crea un token nuevo
+    messages.success(request, "Enlace del pack regenerado.")
     return redirect('pack_detail', pk=pack.pk)
+
+def handler400(request, exception):
+    return render(request, 'errors/400.html', status=400)
+
+def handler403(request, exception):
+    return render(request, 'errors/403.html', status=403)
+
+def handler404(request, exception):
+    return render(request, 'errors/404.html', status=404)
+
+def handler500(request):
+    return render(request, 'errors/500.html', status=500)

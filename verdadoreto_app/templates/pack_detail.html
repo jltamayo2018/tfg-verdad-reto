@@ -3,7 +3,15 @@
 
 {% block content %}
   <h2 class="neon-title">{{ pack.name }}</h2>
-  <p><a class="btn btn-ghost" href="{% url 'dashboard' %}">← Volver a mis packs</a></p>
+
+  <p class="muted" style="margin-top:-6px;">
+    Creado el {{ pack.creation_date|date:"d/m/Y H:i" }}
+  </p>
+
+  <p style="margin:.6rem 0 1rem;">
+    <a class="btn btn-secondary btn-sm" href="{% url 'pack_rename' pack.pk %}">✏️ Cambiar nombre del pack</a>
+    <a class="btn btn-ghost" href="{% url 'dashboard' %}">← Volver a mis packs</a>
+  </p>
 
   <!-- ACCIONES DEL PACK -->
   <div class="card neon-card pack-detail">
@@ -92,42 +100,33 @@
     </details>
   </div>
 
-  <!-- ENLACES PÚBLICOS -->
-  <div class="card neon-card public-links">
-    <h3>Enlaces públicos</h3>
+  <!-- ENLACE PÚBLICO (TOKEN ÚNICO) -->
+<div class="card neon-card public-links">
+  <h3>Enlace público</h3>
 
-    <div class="public-block">
-      <h4>Preguntas</h4>
-      <p>
-        <a id="link-verdad" href="{% url 'publico_por_token' pack.token_verdad %}">
-          ¿Comenzamos con las preguntas?
-        </a>
-        · <a href="{% url 'qr_image' pack.pk 'verdad' %}">Descargar QR</a>
-      </p>
-      <form method="post" action="{% url 'link_regenerate' pack.pk 'verdad' %}" class="inline">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-secondary btn-sm"
-                onclick="return confirm('¿Regenerar enlace de Verdad? El anterior dejará de funcionar.')">
-          Regenerar enlace
-        </button>
-      </form>
-    </div>
+  <div class="public-block">
+    <p class="link-line">
+      <strong>URL del pack:</strong>
+      <a class="url-badge" id="link-pack" href="{% url 'publico_por_token' pack.token %}">
+        {% url 'publico_por_token' pack.token %}
+      </a>
+    </p>
 
-    <div class="public-block">
-      <h4>Retos</h4>
-      <p>
-        <a id="link-reto" href="{% url 'publico_por_token' pack.token_reto %}">
-          ¿Preparados para los retos?
-        </a>
-        · <a href="{% url 'qr_image' pack.pk 'reto' %}">Descargar QR</a>
-      </p>
-      <form method="post" action="{% url 'link_regenerate' pack.pk 'reto' %}" class="inline">
+    <!-- Botonera responsive en grid -->
+    <div class="btn-grid">
+      <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}?t=verdad">Abrir Verdad</a>
+      <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}?t=reto">Abrir Reto</a>
+      <a class="btn btn-primary"   href="{% url 'qr_image' pack.pk %}">Descargar QR</a>
+
+      <!-- El de regenerar es POST: lo metemos en la misma grid -->
+      <form method="post" action="{% url 'link_regenerate' pack.pk %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-secondary btn-sm"
-                onclick="return confirm('¿Regenerar enlace de Reto? El anterior dejará de funcionar.')">
-          Regenerar enlace
+        <button type="submit" class="btn btn-secondary"
+                onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')">
+          Regenerar enlace único
         </button>
       </form>
     </div>
   </div>
+</div>
 {% endblock %}

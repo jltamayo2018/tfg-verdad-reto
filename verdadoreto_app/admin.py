@@ -6,7 +6,7 @@ class PackAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'creation_date')
     search_fields = ('name', 'owner__username')
     list_filter = ('creation_date', 'owner')
-    readonly_fields = ('token_verdad', 'token_reto')
+    # readonly_fields = ('token')
 
 @admin.register(Action)
 class ActionAdmin(admin.ModelAdmin):

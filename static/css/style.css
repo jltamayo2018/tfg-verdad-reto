@@ -1,4 +1,19 @@
 /* =========================
+   VARIABLES / TOKENS
+========================= */
+:root{
+  --container-px: 16px;
+  --container-max: 960px; /* base móvil; se amplía en >=1280px */
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+}
+
+/* =========================
    BASE / GENERAL
 ========================= */
 *,
@@ -24,7 +39,10 @@ h1 { font-size: clamp(28px, 7vw, 40px); }
 h2 { font-size: clamp(22px, 5.5vw, 32px); }
 h3 { font-size: clamp(18px, 4.5vw, 24px); }
 
-.container { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+.container{
+  width: min(100% - 2*var(--container-px), var(--container-max));
+  margin-inline: auto;
+}
 
 img, canvas, svg, video { max-width: 100%; height: auto; display:block; }
 
@@ -36,6 +54,12 @@ a:hover { text-shadow: 0 0 8px #ff00cc; }
 h1, h2, h3, .pack-name { overflow-wrap: anywhere; word-break: break-word; }
 
 @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+/* Utilidades responsivas */
+.hide-on-mobile{ display:none; }
+@media (min-width: 768px){ .hide-on-mobile{ display: initial; } }
+.only-desktop{ display:none; }
+@media (min-width:1024px){ .only-desktop{ display: initial; } }
 
 /* =========================
    BOTONES (global)
@@ -212,6 +236,7 @@ form.inline { display: inline; }
   justify-content: center;
 }
 
+/* grid (tu base) */
 .packs-grid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
@@ -221,15 +246,13 @@ form.inline { display: inline; }
 @media (min-width: 640px){ .packs-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); } }
 @media (min-width: 1024px){ .packs-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); } }
 
+/* --- TARJETA --- */
 .pack-card{
   position: relative;
-  display:flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: block;
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  padding: 14px;
+  padding: 14px 14px 56px;         /* hueco abajo para estrellas + iconos */
   background: rgba(255,255,255,0.05);
   color:#fff;
   text-decoration:none;
@@ -237,8 +260,77 @@ form.inline { display: inline; }
   transition: transform .15s ease, box-shadow .15s ease;
 }
 .pack-card:hover{ transform: translateY(-2px); }
-.pack-name{ font-weight: 700; font-size: clamp(14px, 3.8vw, 18px); text-align: center; line-height: 1.2; word-break: break-word; }
-.pack-meta{ margin-top: 6px; font-size: 12px; opacity: .75; }
+
+/* --- TÍTULO ARRIBA (más grande) --- */
+.pack-card__head{
+  position: relative;
+  z-index: 2;
+  margin: 2px 0 0;
+  text-align: center;
+}
+.pack-card__title{
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(18px, 4.4vw, 26px);   /* ↑ un poco más grande */
+  line-height: 1.2;
+  letter-spacing: .2px;
+  text-shadow: 0 2px 10px rgba(0,0,0,.35);
+  overflow-wrap: anywhere;
+}
+
+/* --- EMOJI GRANDE CENTRADO (un poco más pequeño) --- */
+.pack-card__emoji{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(52px, 10vw, 84px);    /* ↓ un poco más pequeño */
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --- ESTRELLAS (evitar solape con botones) --- */
+.pack-card__level{
+  position: absolute;
+  left: 12px;
+  right: 88px;           /* reserva espacio para 2 iconos + gaps */
+  bottom: 12px;
+  font-size: 14px;
+  letter-spacing: 2px;
+  background: rgba(0,0,0,.25);
+  padding: 4px 8px;
+  border-radius: 999px;
+  z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* en móvil reduce un pelín el chip de estrellas */
+@media (max-width: 480px){
+  .pack-card__level{
+    font-size: 12px;
+    padding: 3px 6px;
+    right: 92px;         /* un poquito más por seguridad */
+  }
+}
+
+/* --- HERRAMIENTAS ABAJO-DCHA (igual que tenías) --- */
+.pack-tools{
+  position:absolute;
+  right:12px; bottom:12px;
+  display:inline-flex;
+  gap:8px;
+  z-index:2;
+}
+
+/* por si quedaban estilos antiguos */
+.pack-name{ font-weight: 700; font-size: clamp(14px, 3.8vw, 18px); }
+.pack-meta{ display: none; }
+
+
 
 /* =========================
    HERO / PORTADA
@@ -523,22 +615,82 @@ nav{ line-height: 1; }
   text-wrap: balance;
 }
 
-/* Botón al fondo */
+/* Botones página pública */
 .public-cta{
   margin-top: 24px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;        /* móvil: apilados */
+  gap: 12px;
+  width: min(720px, 100%);
+  margin-inline: auto;
 }
 .public-cta .btn{
-  font-size: clamp(16px, 4.2vw, 20px);
-  padding: clamp(12px, 3.4vw, 16px) clamp(20px, 6vw, 28px);
-  min-height: 48px;
+  margin: 0;                         /* anula el margin global */
   width: 100%;
-  max-width: 420px;
+  max-width: none;                    /* que llenen su columna */
+  display: flex;                      /* centra texto igual en <a> y <button> */
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;                /* evita saltos distintos */
+  min-height: 52px;
+  font-size: clamp(16px, 2.4vw, 20px);
+  padding: clamp(12px, 1.8vw, 16px) clamp(18px, 3vw, 28px);
 }
 
 /* Un poco más de tamaño en pantallas anchas */
 @media (min-width: 640px){
   .public-action{ font-size: clamp(28px, 5vw, 52px); }
+}
+
+/* Estilo oscuro para inputs y textarea en formularios con .form-dark */
+.form-dark input[type="text"],
+.form-dark input[type="password"],
+.form-dark input[type="email"],
+.form-dark input[type="number"],
+.form-dark textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #6a1b9a;
+  border-radius: 8px;
+  background-color: rgba(203, 83, 255, 0.35);
+  color: #fff; /* texto blanco */
+  font-size: 16px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.form-dark input::placeholder,
+.form-dark textarea::placeholder {
+  color: #bbb; /* placeholder gris claro */
+}
+
+.form-dark label {
+  color: #fff;
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.error-page {
+  text-align: center;
+  padding: 80px 20px;
+  color: #fff;
+}
+
+.error-page h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #ff4dff;
+  text-shadow: 0 0 10px #ff4dff;
+}
+
+.error-page p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  color: #ccc;
+}
+
+.error-page .btn {
+  margin-top: 10px;
 }

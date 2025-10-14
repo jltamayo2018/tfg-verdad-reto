@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Acceso prohibido{% endblock %}
+
+{% block content %}
+<div class="error-page">
+  <h1>🚫 Acceso denegado (403)</h1>
+  <p>No tienes permisos para acceder a esta página.</p>
+  <a href="{% url 'home' %}" class="btn btn-primary">Ir al inicio</a>
+</div>
+{% endblock %}

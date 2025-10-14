@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% block title %}{% if modo == 'nueva' %}Nueva {{ tipo_legible }}{% else %}Editar {{ tipo_legible }}{% endif %}{% endblock %}
+{% block title %}Nuevo pack{% endblock %}
 
 {% block content %}
-  <h2>{% if modo == 'nueva' %}Nueva {{ tipo_legible }}{% else %}Editar {{ tipo_legible }}{% endif %}</h2>
-  <p><a class="btn btn-ghost" href="{% url 'pack_detail' pack.pk %}">← Volver al pack</a></p>
+  <h2>Crear pack</h2>
 
   <div class="card">
-    <form method="post">
+    <form method="post" class="form-dark">
       {% csrf_token %}
       {{ form.as_p }}
       <button type="submit" class="btn btn-primary">Guardar</button>
-      <a class="btn btn-ghost" href="{% url 'pack_detail' pack.pk %}">Cancelar</a>
+      <a class="btn btn-ghost" href="{% url 'dashboard' %}">Cancelar</a>
     </form>
   </div>
 {% endblock %}
