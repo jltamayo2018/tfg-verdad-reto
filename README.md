@@ -44,3 +44,6 @@ Página de detalles del pack mejorada considerablemente, vistosa, acordeones...
 
 Mejoras estéticas y funcionales en muchasde las páginas de la web
 
+20/10/25
+
+Comienzo del despliegue

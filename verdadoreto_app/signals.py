@@ -11,7 +11,7 @@ User = get_user_model()
 
 DEFAULT_PACKS = [
     {
-        "name": "Pueblo",
+        "name": "Fiesta",
         "category": Pack.Category.FIESTA,
         "level": 2,
         "acciones": [
@@ -39,7 +39,7 @@ DEFAULT_PACKS = [
         ]
     },
     {
-        "name": "Previa Viernes",
+        "name": "Picante",
         "category": Pack.Category.PICANTE,
         "level": 4,
         "acciones": [
@@ -57,7 +57,7 @@ DEFAULT_PACKS = [
         ],
     },
     {
-        "name": "Navidad en Familia",
+        "name": "Familiar",
         "category": Pack.Category.FAMILIAR,
         "level": 1,
         "acciones": [
@@ -75,7 +75,7 @@ DEFAULT_PACKS = [
         ],
     },
     {
-        "name": "San Valentín",
+        "name": "En pareja",
         "category": Pack.Category.ROMANTICO,
         "level": 3,
         "acciones": [
