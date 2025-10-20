@@ -1,65 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=7">
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Verdad o Reto{% endblock %}</title>
-    <style>
-        nav a, nav form button {
-            margin-right: 10px;
-            text-decoration: none;
-            color: rgb(255, 255, 255);
-        }
-        nav form {
-            display: inline;
-        }
-        nav form button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .flash { margin: 10px 0; }
-        .flash .msg {
-            padding: 8px 12px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            border: 1px solid transparent;
-        }
-        .flash .msg.success { background: #0dcf44; border-color: #65e603; }
-        .flash .msg.error   { background: #ff1100; border-color: #ffa39e; }
-        .flash .msg.info    { background: #e6f7ff; border-color: #91d5ff; }
-    </style>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?v=8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Verdad o Reto{% endblock %}</title>
 </head>
 <body>
-    <nav>
-        <a href="{% url 'home' %}">Inicio</a>
-        {% if user.is_authenticated %}
-            <a href="{% url 'dashboard' %}">Mis packs</a>
-            <form method="post" action="{% url 'logout' %}">
+
+  <!-- Header con hamburguesa -->
+  <header class="site-header" role="banner">
+    <div class="site-header__inner">
+      <a class="brand" href="{% url 'home' %}">VR</a>
+
+      <button class="nav-toggle" aria-label="Abrir menú" aria-controls="mainmenu" aria-expanded="false">
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav id="mainmenu" class="nav-panel" role="navigation" aria-label="Principal">
+        <ul class="nav-list">
+          <li><a href="{% url 'home' %}">Inicio</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'dashboard' %}">Mis packs</a></li>
+            <li>
+              <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit">Salir</button>
-            </form>
-        {% else %}
-            <a href="{% url 'login' %}">Entrar</a>
-            <a href="{% url 'registro' %}">Registrarse</a>
-        {% endif %}
-    </nav>    
+                <button type="submit" class="linklike">Cerrar sesión</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+            <li><a href="{% url 'registro' %}">Registrarse</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <hr>
+  {% if messages %}
+    <div class="flash">
+      {% for message in messages %}
+        <div class="msg {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
 
-    {% if messages %}
-        <div class="flash">
-            {% for message in messages %}
-                <div class="msg {{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-    
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
+
+  <script>
+    (function () {
+      const btn = document.querySelector('.nav-toggle');
+      const panel = document.getElementById('mainmenu');
+      if (!btn || !panel) return;
+
+      btn.addEventListener('click', () => {
+        const open = panel.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+
+      // Cierra al pulsar un enlace
+      panel.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A' || e.target.closest('button.linklike')) {
+          panel.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+  </script>
 </body>
 </html>

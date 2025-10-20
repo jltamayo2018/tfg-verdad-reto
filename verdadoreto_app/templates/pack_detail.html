@@ -1,17 +1,34 @@
 {% extends "base.html" %}
+{% load pack_extras %}
 {% block title %}{{ pack.name }}{% endblock %}
 
 {% block content %}
-  <h2 class="neon-title">{{ pack.name }}</h2>
+  <div class="pack-header card neon-card">
+    <div class="pack-header__top">
+      <h2 class="neon-title">{{ pack.name }}</h2>
+      <p class="pack-sub">Creado el {{ pack.creation_date|date:"d/m/Y H:i" }}</p>
+    </div>
 
-  <p class="muted" style="margin-top:-6px;">
-    Creado el {{ pack.creation_date|date:"d/m/Y H:i" }}
-  </p>
+    <div class="pack-meta-row">
+      {% with label=pack.get_category_display %}
+        <span class="pill pill-ghost">
+          <span class="pill-emoji">{{ label|slice:":2" }}</span>
+          <span class="pill-text">{{ label|slice:"2:" }}</span>
+        </span>
+      {% endwith %}
 
-  <p style="margin:.6rem 0 1rem;">
-    <a class="btn btn-secondary btn-sm" href="{% url 'pack_rename' pack.pk %}">✏️ Cambiar nombre del pack</a>
-    <a class="btn btn-ghost" href="{% url 'dashboard' %}">← Volver a mis packs</a>
-  </p>
+      <span class="pill">
+        {% stars pack.level 5 %}
+      </span>
+    </div>
+
+    <div class="pack-meta-row">
+      <a class="btn btn-secondary btn-sm" href="{% url 'pack_rename' pack.pk %}">
+        ✏️ Editar pack
+      </a>
+      <a class="btn btn-ghost btn-sm" href="{% url 'dashboard' %}">← Volver a mis packs</a>
+    </div>
+  </div>
 
   <!-- ACCIONES DEL PACK -->
   <div class="card neon-card pack-detail">
@@ -20,8 +37,8 @@
     <!-- VERDAD -->
     <details class="accordion">
       <summary class="accordion-header">
-        <span class="chip chip-truth">Preguntas</span>
-        <a class="btn btn-primary btn-sm" href="{% url 'action_create' pack.pk 'verdad' %}">+ Añadir Pregunta</a>
+        <span class="chip chip-truth">Verdad</span>
+        <a class="btn btn-primary btn-sm" href="{% url 'action_create' pack.pk 'verdad' %}">+ Añadir Verdad</a>
       </summary>
 
       {% if verdades %}
@@ -61,7 +78,7 @@
     <!-- RETO -->
     <details class="accordion">
       <summary class="accordion-header">
-        <span class="chip chip-dare">Retos</span>
+        <span class="chip chip-dare">Reto</span>
         <a class="btn btn-primary btn-sm" href="{% url 'action_create' pack.pk 'reto' %}">+ Añadir Reto</a>
       </summary>
 
@@ -101,32 +118,31 @@
   </div>
 
   <!-- ENLACE PÚBLICO (TOKEN ÚNICO) -->
-<div class="card neon-card public-links">
-  <h3>Enlace público</h3>
+  <div class="card neon-card public-links">
+    <h3>Enlace público</h3>
 
-  <div class="public-block">
-    <p class="link-line">
-      <strong>URL del pack:</strong>
-      <a class="url-badge" id="link-pack" href="{% url 'publico_por_token' pack.token %}">
-        {% url 'publico_por_token' pack.token %}
-      </a>
-    </p>
+    <div class="public-block">
+      <p class="link-line">
+        <strong>URL del pack:</strong>
+        <a class="url-badge" id="link-pack" href="{% url 'publico_por_token' pack.token %}">
+          {% url 'publico_por_token' pack.token %}
+        </a>
+      </p>
 
-    <!-- Botonera responsive en grid -->
-    <div class="btn-grid">
-      <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}?t=verdad">Abrir Verdad</a>
-      <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}?t=reto">Abrir Reto</a>
-      <a class="btn btn-primary"   href="{% url 'qr_image' pack.pk %}">Descargar QR</a>
+      <!-- Botonera responsive en grid -->
+      <div class="btn-grid">
+        <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}">Jugar</a>
+        <a class="btn btn-primary"   href="{% url 'qr_image' pack.pk %}">Descargar QR</a>
 
-      <!-- El de regenerar es POST: lo metemos en la misma grid -->
-      <form method="post" action="{% url 'link_regenerate' pack.pk %}">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-secondary"
-                onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')">
-          Regenerar enlace único
-        </button>
-      </form>
+        <!-- El de regenerar es POST: lo metemos en la misma grid -->
+        <form method="post" action="{% url 'link_regenerate' pack.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-secondary"
+                  onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')">
+            Regenerar enlace único
+          </button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}

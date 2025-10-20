@@ -1,15 +1,38 @@
 {% extends "base.html" %}
-{% block title %}Nuevo pack{% endblock %}
+{% block title %}{{ page_title|default:"Pack" }}{% endblock %}
 
 {% block content %}
-  <h2>Crear pack</h2>
+  <div class="container">
+    <h2 class="neon-title">{{ page_title|default:"Pack" }}</h2>
 
-  <div class="card">
-    <form method="post" class="form-dark">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn btn-primary">Guardar</button>
-      <a class="btn btn-ghost" href="{% url 'dashboard' %}">Cancelar</a>
-    </form>
+    <div class="card neon-card" style="max-width:920px; margin-inline:auto;">
+      <form method="post" class="form-dark">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label for="{{ form.name.id_for_label }}">Nombre del pack:</label>
+          {{ form.name }}
+          {% if form.name.errors %}<div class="field-error">{{ form.name.errors|join:", " }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.category.id_for_label }}">Categoría:</label>
+          {{ form.category }}
+          {% if form.category.errors %}<div class="field-error">{{ form.category.errors|join:", " }}</div>{% endif %}
+        </div>
+
+        <div class="form-row">
+          <label for="{{ form.level.id_for_label }}">Nivel (1 a 5):</label>
+          {{ form.level }}
+          <div class="muted" style="margin-top:6px;">Indica el nivel de picantez o dificultad (1 = suave, 5 = extremo).</div>
+          {% if form.level.errors %}<div class="field-error">{{ form.level.errors|join:", " }}</div>{% endif %}
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:center; margin-top:12px;">
+          <button type="submit" class="btn btn-primary">{{ submit_label|default:"Guardar" }}</button>
+          <a class="btn btn-ghost" href="{{ cancel_url|default:request.META.HTTP_REFERER|default:'/' }}">Cancelar</a>
+        </div>
+      </form>
+    </div>
   </div>
 {% endblock %}

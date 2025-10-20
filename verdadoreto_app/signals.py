@@ -11,7 +11,9 @@ User = get_user_model()
 
 DEFAULT_PACKS = [
     {
-        "name": "Fiesta",
+        "name": "Pueblo",
+        "category": Pack.Category.FIESTA,
+        "level": 2,
         "acciones": [
             {"type": Action.Type.VERDAD, "text": "¿Cuál ha sido tu mayor metedura de pata en una fiesta?"},
             {"type": Action.Type.VERDAD, "text": "¿Has mentido hoy a alguien del grupo?"},
@@ -36,6 +38,60 @@ DEFAULT_PACKS = [
             {"type": Action.Type.RETO, "text": "Deja que alguien te cambie el peinado."},
         ]
     },
+    {
+        "name": "Previa Viernes",
+        "category": Pack.Category.PICANTE,
+        "level": 4,
+        "acciones": [
+            {"type": Action.Type.VERDAD, "text": "¿Cuál es tu mayor fetiche (si te atreves a decirlo)?"},
+            {"type": Action.Type.VERDAD, "text": "¿Has tenido un sueño subido de tono con alguien del grupo?"},
+            {"type": Action.Type.VERDAD, "text": "¿Qué es lo más atrevido que has enviado por chat?"},
+            {"type": Action.Type.VERDAD, "text": "¿Con quién tendrías una cita a ciegas ahora mismo?"},
+            {"type": Action.Type.VERDAD, "text": "Di algo que te encienda y algo que te apague al instante."},
+
+            {"type": Action.Type.RETO, "text": "Envía un 😏 a tu último chat con el texto: “Luego te cuento…”"},
+            {"type": Action.Type.RETO, "text": "Lee en voz alta el último mensaje que te hayan enviado con voz seductora."},
+            {"type": Action.Type.RETO, "text": "Haz un piropo elegante a la persona de tu izquierda."},
+            {"type": Action.Type.RETO, "text": "Baila pegado/a 20 segundos con quien el grupo elija (con consentimiento)."},
+            {"type": Action.Type.RETO, "text": "Di tu top 3 de celebrities con las que tendrías una cita."},
+        ],
+    },
+    {
+        "name": "Navidad en Familia",
+        "category": Pack.Category.FAMILIAR,
+        "level": 1,
+        "acciones": [
+            {"type": Action.Type.VERDAD, "text": "Cuenta una anécdota divertida de cuando eras peque."},
+            {"type": Action.Type.VERDAD, "text": "¿Cuál es tu comida casera favorita y por qué?"},
+            {"type": Action.Type.VERDAD, "text": "¿Qué tradición familiar te encanta mantener?"},
+            {"type": Action.Type.VERDAD, "text": "¿Qué es lo más travieso que hiciste en el cole?"},
+            {"type": Action.Type.VERDAD, "text": "Nombra a un familiar que te inspire y por qué."},
+
+            {"type": Action.Type.RETO, "text": "Imita a un miembro de tu familia (con cariño)."},
+            {"type": Action.Type.RETO, "text": "Cuéntanos un chiste apto para toda la familia."},
+            {"type": Action.Type.RETO, "text": "Haz una ‘coreo’ de 10 seg con otra persona del grupo."},
+            {"type": Action.Type.RETO, "text": "Di 3 cosas por las que estés agradecido/a hoy."},
+            {"type": Action.Type.RETO, "text": "Cuenta una curiosidad tuya que casi nadie conozca."},
+        ],
+    },
+    {
+        "name": "San Valentín",
+        "category": Pack.Category.ROMANTICO,
+        "level": 3,
+        "acciones": [
+            {"type": Action.Type.VERDAD, "text": "Describe tu cita ideal en una frase."},
+            {"type": Action.Type.VERDAD, "text": "¿Qué detalle romántico te marcó alguna vez?"},
+            {"type": Action.Type.VERDAD, "text": "¿Qué canción asocias con el amor?"},
+            {"type": Action.Type.VERDAD, "text": "¿Qué valoras más en una relación?"},
+            {"type": Action.Type.VERDAD, "text": "Confiesa un gesto cursi que te encanta (aunque no lo admitas)."},            
+
+            {"type": Action.Type.RETO, "text": "Di un cumplido sincero a la persona que el grupo elija."},
+            {"type": Action.Type.RETO, "text": "Escribe un mini poema de 2 líneas y léelo en voz alta."},
+            {"type": Action.Type.RETO, "text": "Haz un ‘corazón’ con las manos y dedícalo a alguien del grupo."},
+            {"type": Action.Type.RETO, "text": "Recuerda en voz alta tu escena romántica favorita de una peli/serie."},
+            {"type": Action.Type.RETO, "text": "Cuenta tu plan perfecto de domingo en pareja."},
+        ],
+    },
 ]
 
 @receiver(post_save, sender=User)
@@ -47,7 +103,12 @@ def crear_packs_predeterminados(sender, instance: AbstractBaseUser, created: boo
 
     with transaction.atomic():
         for pack_def in DEFAULT_PACKS:
-            pack = Pack.objects.create(owner=instance, name=pack_def["name"])
+            pack = Pack.objects.create(
+                owner=instance, 
+                name=pack_def["name"],
+                category=pack_def.get("category", Pack.Category.RANDOM),
+                level=pack_def.get("level", 3),
+            )
             acciones = [
                 Action(pack=pack, type=acc["type"], text=acc["text"], active=True)
                 for acc in pack_def["acciones"]

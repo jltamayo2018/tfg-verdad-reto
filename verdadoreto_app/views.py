@@ -47,7 +47,12 @@ def pack_create(request):
     else:
         form = PackForm()
     
-    return render(request, 'pack_form.html', {'form': form})
+    return render(request, 'pack_form.html', {
+    'form': form,
+    'page_title': 'Crear pack',
+    'submit_label': 'Guardar',
+    'cancel_url': reverse('dashboard'),
+    })
 
 @login_required
 def pack_rename(request, pk):
@@ -63,8 +68,11 @@ def pack_rename(request, pk):
 
     # podemos reutilizar tu pack_form.html cambiando el título
     return render(request, 'pack_form.html', {
-        'form': form,
-        'pack': pack,
+    'form': form,
+    'pack': pack,
+    'page_title': 'Editar pack',
+    'submit_label': 'Guardar',
+    'cancel_url': reverse('dashboard'),
     })
 
 @login_required
@@ -112,10 +120,12 @@ def action_create(request, pk, tipo):
         form = ActionForm(initial={'type': tipo})
 
     return render(request, 'action_form.html', {
-        'form': form,
-        'pack': pack,
-        'modo': 'nueva',
-        'tipo_legible': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
+    'form': form,
+    'pack': pack,
+    'modo': 'nueva',
+    'tipo_legible': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
+    'page_title': f"Nuev{'a Verdad' if tipo == Action.Type.VERDAD else 'o Reto'}",
+    'submit_label': 'Guardar',
     })
 
 @login_required
@@ -136,10 +146,12 @@ def action_edit(request, pk, accion_id):
         form = ActionForm(instance=accion)
 
     return render(request, 'action_form.html', {
-        'form': form,
-        'pack': pack,
-        'modo': 'editar',
-        'tipo_legible': 'Verdad' if accion.type == Action.Type.VERDAD else 'Reto',
+    'form': form,
+    'pack': pack,
+    'modo': 'editar',
+    'tipo_legible': 'Verdad' if accion.type == Action.Type.VERDAD else 'Reto',
+    'page_title': f"Editar {'Verdad' if accion.type == Action.Type.VERDAD else 'Reto'}",
+    'submit_label': 'Guardar',
     })
 
 @login_required
