@@ -89,14 +89,18 @@ WSGI_APPLICATION = 'verdadoreto.wsgi.application'
 
 DEFAULT_DB_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
+db_url = os.environ.get("DATABASE_URL", DEFAULT_DB_URL)
+
+# Fuerza SSL solo si usamos Postgres en Render
+is_postgres = db_url.startswith(("postgres://", "postgresql://"))
+
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.environ.get("DATABASE_URL", DEFAULT_DB_URL),
+        default=db_url,
         conn_max_age=600,
-        ssl_require=bool(os.environ.get("RENDER")),  # True en Render, False en local
+        ssl_require=is_postgres,   # <- evita 'sslmode' bajo SQLite
     )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
