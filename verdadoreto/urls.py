@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-handler400 = "verdadoreto.views.handler400"
-handler403 = "verdadoreto.views.handler403"
-handler404 = "verdadoreto.views.handler404"
-handler500 = "verdadoreto.views.handler500"
+handler400 = "verdadoreto_app.views.handler400"
+handler403 = "verdadoreto_app.views.handler403"
+handler404 = "verdadoreto_app.views.handler404"
+handler500 = "verdadoreto_app.views.handler500"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
