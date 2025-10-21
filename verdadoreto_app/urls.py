@@ -1,12 +1,6 @@
 from django.urls import path
 from . import views
 
-handler400 = "verdadoreto.views.handler400"
-handler403 = "verdadoreto.views.handler403"
-handler404 = "verdadoreto.views.handler404"
-handler500 = "verdadoreto.views.handler500"
-
-
 urlpatterns = [
     path('', views.home, name='home'),
     path('registro/', views.registro, name='registro'),
