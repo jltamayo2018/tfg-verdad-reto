@@ -46,4 +46,8 @@ Mejoras estéticas y funcionales en muchasde las páginas de la web
 
 20/10/25
 
-Comienzo del despliegue
+Despliegue
+
+21/10/2025
+
+Resolución de errores, redirecciones y otros

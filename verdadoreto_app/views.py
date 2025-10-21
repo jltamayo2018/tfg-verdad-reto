@@ -83,9 +83,8 @@ def pack_delete(request, pk):
         pack.delete()
         messages.success(request, f'Pack "{nombre}" eliminado.')
         return redirect('dashboard')
-    # Si alguien llega por GET, redirigimos por seguridad
-    messages.info(request, "Para eliminar un pack, usa el botón de borrar.")
-    return redirect('dashboard')
+    
+    return render(request, 'pack_confirm_delete.html', {'pack': pack})
 
 @login_required
 def pack_detail(request, pk):

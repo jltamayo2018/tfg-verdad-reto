@@ -45,19 +45,13 @@
                 <span aria-hidden="true">✏️</span>
               </a>
 
-              <form action="{% url 'pack_delete' p.pk %}"
-                    method="post"
-                    class="inline"
-                    style="margin:0;">
-                {% csrf_token %}
-                <button type="submit"
-                        class="icon-btn danger"
-                        title="Eliminar pack"
-                        aria-label="Eliminar pack"
-                        onclick="return confirm('¿Seguro que quieres eliminar este pack?');">
-                  <span aria-hidden="true">🗑️</span>
-                </button>
-              </form>
+              <a href="{% url 'pack_delete' p.pk %}"
+                class="icon-btn danger"
+                title="Eliminar pack"
+                aria-label="Eliminar pack">
+                <span aria-hidden="true">🗑️</span>
+              </a>
+
             </div>
           </div>
         {% endfor %}
