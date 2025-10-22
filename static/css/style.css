@@ -88,7 +88,12 @@ h1, h2, h3, .pack-name { overflow-wrap: anywhere; word-break: break-word; }
 .btn-ghost:hover { background: rgba(255,255,255,0.08); }
 
 .btn-sm { padding: 8px 14px; font-size: .95rem; min-height: 36px; margin: 0; }
-.btn-wide { width: 100%; max-width: 360px; }
+.btn-wide{
+  display: block;          /* pasa de inline-block a block */
+  width: 100%;
+  max-width: 420px;        /* límite de ancho */
+  margin: 8px auto;        /* centra horizontalmente */
+}
 
 /* Botones de icono compactos (listas de acciones) */
 .icon-btn{
