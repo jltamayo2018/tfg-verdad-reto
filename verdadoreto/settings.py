@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-import os
-import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,24 +19,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure--iv4pj&sa&^$g97%%43&t=4pv#(!j)27tbq*pb36mnn6&01-64'
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE_ME_DEV_ONLY")
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    ".onrender.com",              # Render
-    "verdadreto.es",              # tu dominio (cuando lo conectes)
-    "www.verdadreto.es",
-    "localhost",
-    "127.0.0.1",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://*.onrender.com",
-    "https://verdadreto.es",
-    "https://www.verdadreto.es",
-]
-
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -55,7 +42,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,20 +73,13 @@ WSGI_APPLICATION = 'verdadoreto.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DEFAULT_DB_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
-
-db_url = os.environ.get("DATABASE_URL", DEFAULT_DB_URL)
-
-# Fuerza SSL solo si usamos Postgres en Render
-is_postgres = db_url.startswith(("postgres://", "postgresql://"))
-
 DATABASES = {
-    "default": dj_database_url.config(
-        default=db_url,
-        conn_max_age=600,
-        ssl_require=is_postgres,   # <- evita 'sslmode' bajo SQLite
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -139,17 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
-
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
+STATICFILES_DIRS = [BASE_DIR / "static"]  # para desarrollo
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
