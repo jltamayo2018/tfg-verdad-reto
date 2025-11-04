@@ -23,12 +23,61 @@
     </div>
 
     <div class="pack-meta-row">
-      <a class="btn btn-secondary btn-sm" href="{% url 'pack_rename' pack.pk %}">
+      <a class="btn btn-secondary btn-sm" href="{% url 'pack_edit' pack.pk %}">
         ✏️ Editar pack
       </a>
       <a class="btn btn-ghost btn-sm" href="{% url 'dashboard' %}">← Volver a mis packs</a>
     </div>
   </div>
+
+  <!-- COMPARTIR PACK (solo dueño) -->
+  {% if user == pack.owner %}
+  <div class="card neon-card share-box">
+    <h3>Compartir pack</h3>
+
+    <form method="post" action="{% url 'add_collaborator' pack.pk %}" class="form-grid">
+      {% csrf_token %}
+      {% if form_add_collab.non_field_errors %}
+        <div class="form-errors">
+          {{ form_add_collab.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <div class="form-row">
+        <label for="{{ form_add_collab.username.id_for_label }}">Usuario</label>
+        {{ form_add_collab.username }}
+        {{ form_add_collab.username.errors }}
+      </div>
+
+      <div class="form-row">
+        <label for="{{ form_add_collab.role.id_for_label }}">Rol</label>
+        {{ form_add_collab.role }}
+        {{ form_add_collab.role.errors }}
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" style="margin: 0 auto; display: block;">Conceder acceso</button>
+      </div>
+    </form>
+
+    <h4>Colaboradores</h4>
+    {% for c in collaborators %}
+      <div class="collab-row">
+      <span class="collab-user">{{ c.user.username }}</span>
+      <span class="sep">-</span>
+      <span class="collab-role">{{ c.get_role_display }}</span>
+      <span class="sep">-</span>
+      <a class="collab-remove"
+         href="{% url 'remove_collaborator' pack.pk c.user.pk %}"
+         onclick="return confirm('¿Quitar acceso a @{{ c.user.username }}?');">
+        Quitar
+      </a>
+    </div>
+    {% empty %}
+      <span class="muted">Sin colaboradores aún.</span>
+    {% endfor %}
+  </div>
+  {% endif %}
 
   <!-- ACCIONES DEL PACK -->
   <div class="card neon-card pack-detail">

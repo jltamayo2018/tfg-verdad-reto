@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load pack_extras %}
+{% block title %}Packs compartidos{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="neon-title">Packs compartidos</h2>
+
+    {% if packs %}
+        <section class="packs-grid" aria-label="Cuadrícula de packs">
+            {% for p in packs %}
+                <div class="pack-card-wrap" style="position:relative;">
+                    <a href="{% url 'publico_por_token' p.token %}"
+                        class="pack-card neon-card"
+                        aria-label="Jugar pack {{ p.name }}">
+                        <header class="pack-card__head">
+                            <h3 class="pack-card__title">{{ p.name }}</h3>
+                        </header>
+
+                        <!--<small>Propietario: {{ p.owner.username }}</small> -->
+
+                        <!-- Emoji centrado (toma el emoji del label de la choice) -->
+                        {% with label=p.get_category_display %}
+                            <div class="pack-card__emoji">{{ label|slice:":1" }}</div>
+                        {% endwith %}
+
+                        <!-- Estrellas abajo-izquierda -->
+                        <div class="pack-card__level">
+                            <span class="stars">{% stars_compact p.level 5 %}</span>
+                        </div>
+                    </a>
+
+                    <!-- Botones flotantes (editar y eliminar pack) -->
+                    <div class="pack-tools" style="position:absolute; right:12px; bottom:12px; display:inline-flex; gap:8px; z-index:2;">
+                        <a href="{% url 'pack_detail' p.pk %}"
+                            class="icon-btn"
+                            title="Detalles del pack"
+                            aria-label="Editar nombre">
+                            <span aria-hidden="true">✏️</span>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </section>
+    {% else %}
+        <div class="card">
+            <p class="muted">Aún no tienes packs compartidos.</p>
+        </div>
+    {% endif %}
+  </div>
+{% endblock %}

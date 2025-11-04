@@ -51,3 +51,7 @@ Despliegue
 21/10/2025
 
 Resolución de errores, redirecciones y otros
+
+04/11/2025
+
+Funcionalidad para dar accesos de editor de packs

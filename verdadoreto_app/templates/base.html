@@ -27,6 +27,7 @@
           <li><a href="{% url 'home' %}">Inicio</a></li>
           {% if user.is_authenticated %}
             <li><a href="{% url 'dashboard' %}">Mis packs</a></li>
+            <li><a href="{% url 'shared_packs' %}">Packs compartidos</a></li>
             <li>
               <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}

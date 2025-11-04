@@ -68,3 +68,30 @@ class Action(models.Model):
 
     def __str__(self):
         return f"[{self.get_type_display()}] {self.text[:40]}..."
+
+# Modelo para representar colaboradores de un Pack    
+class PackCollaborator(models.Model):
+    class Role(models.TextChoices):
+        EDITOR = "editor", "Editor"
+        VIEWER = "viewer", "Solo lectura"
+
+    pack = models.ForeignKey(Pack, on_delete=models.CASCADE, related_name='collaborators')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_packs')
+    role = models.CharField(max_length=12, choices=Role.choices, default=Role.EDITOR)
+    added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='granted_permissions')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    ROLE_CHOICES = Role.choices
+    EDITOR = Role.EDITOR
+    VIEWER = Role.VIEWER 
+
+    class Meta:
+        unique_together = ('pack', 'user')
+        indexes = [
+            models.Index(fields=['pack', 'user']),
+        ]
+        verbose_name = "Colaborador de Pack"
+        verbose_name_plural = "Colaboradores de Packs"
+
+    def __str__(self):
+        return f"{self.user.username} ({self.get_role_display()}) en {self.pack.name}"

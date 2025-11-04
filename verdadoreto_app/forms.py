@@ -1,5 +1,6 @@
 from django import forms
-from .models import Pack, Action
+from .models import Pack, Action, PackCollaborator
+from django.contrib.auth.models import User
 
 class PackForm(forms.ModelForm):
     class Meta:
@@ -41,3 +42,17 @@ class ActionForm(forms.ModelForm):
         widgets = {
             'text': forms.Textarea(attrs={'rows': 4}),
         }
+
+class AddCollaboratorForm(forms.Form):
+    username = forms.CharField(label="Nombre de usuario", max_length=150)
+    role = forms.ChoiceField(choices=PackCollaborator.ROLE_CHOICES, initial=PackCollaborator.EDITOR)
+
+    def clean(self):
+        cleaned = super().clean()
+        username = cleaned.get('username')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise forms.ValidationError("Ese usuario no existe.")
+        cleaned['target_user'] = user
+        return cleaned

@@ -11,15 +11,20 @@ urlpatterns = [
     path('packs/<int:pk>/', views.pack_detail, name='pack_detail'),
     path('packs/<int:pk>/qr.png', views.qr_image, name='qr_image'),
     path('packs/<int:pk>/links/regenerate/', views.link_regenerate, name='link_regenerate'),
+
+    # gestión de packs
+    path('packs/<int:pk>/collaborators/add/', views.add_collaborator, name='add_collaborator'),
+    path('packs/<int:pk>/collaborators/<int:user_id>/remove/', views.remove_collaborator, name='remove_collaborator'),
+    path('packs-compartidos/', views.shared_packs, name='shared_packs'),
     
     # acciones dentro de un pack
     path('packs/<int:pk>/actions/new/<str:tipo>/', views.action_create, name='action_create'),
-    path('packs/<int:pk>/actions/<int:accion_id>/edit/', views.action_edit, name='action_edit'),
-    path('packs/<int:pk>/actions/<int:accion_id>/toggle/', views.action_toggle, name='action_toggle'),
-    path('packs/<int:pk>/actions/<int:accion_id>/delete/', views.action_delete, name='action_delete'),
+    path('packs/<int:pk>/actions/<int:action_id>/edit/', views.action_edit, name='action_edit'),
+    path('packs/<int:pk>/actions/<int:action_id>/toggle/', views.action_toggle, name='action_toggle'),
+    path('packs/<int:pk>/actions/<int:action_id>/delete/', views.action_delete, name='action_delete'),
 
     # gestión del pack
-    path('packs/<int:pk>/rename/', views.pack_rename, name='pack_rename'),
+    path('packs/<int:pk>/edit/', views.pack_edit, name='pack_edit'),
     path('packs/<int:pk>/delete/', views.pack_delete, name='pack_delete'),
 
     # pública por token
