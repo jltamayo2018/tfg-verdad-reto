@@ -76,6 +76,7 @@ h1, h2, h3, .pack-name { overflow-wrap: anywhere; word-break: break-word; }
   color: #fff;
   transition: all .2s ease;
   min-height: 44px;
+  text-align: center;
 }
 
 .btn-primary { border-color: #ff00cc; box-shadow: 0 0 12px #ff00cc; }
