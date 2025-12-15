@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -10,6 +11,7 @@ from .forms import PackForm, ActionForm, AddCollaboratorForm
 from .models import Action, Pack, PackCollaborator
 from .permissions import can_edit_pack
 import random, qrcode, io
+from .models import VideoRoom, GameState, RoomParticipant
 
 def home(request):
     return render(request, 'home.html')
@@ -348,3 +350,64 @@ def remove_collaborator(request, pk, user_id):
 def shared_packs(request):
     qs = Pack.objects.filter(collaborators__user=request.user).select_related('owner').distinct()
     return render(request, "shared_packs.html", {"packs": qs})
+
+@login_required
+def create_room(request, pack_id):
+    # Solo el dueño del pack crea sala (ajusta si quieres permitir más casos)
+    pack = get_object_or_404(Pack, id=pack_id, owner=request.user)
+    code = VideoRoom.generate_code()
+    room = VideoRoom.objects.create(code=code, pack=pack, host=request.user)
+    room.start_ttl(30)  # 30 minutos de duración inicial
+
+    # Estado inicial del juego
+    GameState.objects.create(room=room, current_index=0)
+
+    # Registrar al host como participante
+    RoomParticipant.objects.get_or_create(
+        room=room,
+        user=request.user,
+        defaults={"display_name": request.user.username, "role": "host"},
+    )
+    return redirect("room_view", code=room.code)
+
+@login_required
+def room_view(request, code):
+    room = get_object_or_404(VideoRoom, code=code)
+
+    # Registrar participante único
+    rp, _ = RoomParticipant.objects.get_or_create(
+        room=room,
+        user=request.user,
+        defaults={"display_name": request.user.username, "role": "player"},
+    )
+
+    is_host = (room.host_id == request.user.id)
+    pack = room.pack
+
+    # ------------------------------
+    # SERIALIZAR PREGUNTAS DEL PACK
+    # ------------------------------
+    actions = (
+        pack.actions
+        .filter(active=True)     # solo las activas
+        .order_by("id")          # orden estable
+    )
+
+    questions = [
+        {
+            "id": a.id,
+            "text": a.text,
+            "type": a.type,
+        }
+        for a in actions
+    ]
+
+    questions_json = json.dumps(questions, ensure_ascii=False)
+
+    return render(request, "room.html", {
+        "room": room,
+        "pack": pack,
+        "is_host": is_host,
+        "display_name": rp.display_name,
+        "questions_json": questions_json,
+    })

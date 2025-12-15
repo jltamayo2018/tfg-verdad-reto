@@ -1,16 +1,38 @@
 """
 ASGI config for verdadoreto project.
 
-It exposes the ASGI callable as a module-level variable named ``application``.
+Expone la aplicación ASGI con soporte para HTTP y WebSockets (Django Channels).
 
-For more information on this file, see
+Más información:
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
 import os
-
 from django.core.asgi import get_asgi_application
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'verdadoreto.settings')
+django_asgi_app = get_asgi_application()
 
-application = get_asgi_application()
+# En desarrollo, servir también los estáticos vía ASGI
+from django.conf import settings
+if settings.DEBUG:
+    from django.contrib.staticfiles.handlers import ASGIStaticFilesHandler
+    django_asgi_app = ASGIStaticFilesHandler(django_asgi_app)
+
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+from django.urls import path
+from verdadoreto_app.consumers import RoomConsumer
+
+# Router principal: HTTP va a Django; WebSocket va a Channels (AuthMiddlewareStack + URLRouter)
+application = ProtocolTypeRouter({
+    "http": django_asgi_app,
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            # Ruta de WebSocket para las salas de juego
+            # Ejemplo de conexión desde el navegador:
+            #   ws://<host>/ws/rooms/<code>/
+            path("ws/rooms/<str:code>/", RoomConsumer.as_asgi()),
+        ])
+    ),
+})

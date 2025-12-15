@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pack, Action
+from .models import Pack, Action, VideoRoom, RoomParticipant, GameState
 
 @admin.register(Pack)
 class PackAdmin(admin.ModelAdmin):
@@ -17,3 +17,18 @@ class ActionAdmin(admin.ModelAdmin):
     def text_short(self, obj):
         return (obj.text[:60] + '…') if len(obj.text) > 60 else obj.text
     text_short.short_description = 'Texto'
+
+@admin.register(VideoRoom)
+class VideoRoomAdmin(admin.ModelAdmin):
+    list_display = ("code", "pack", "host", "status", "created_at")
+    search_fields = ("code",)
+    list_filter = ("status",)
+
+@admin.register(RoomParticipant)
+class RoomParticipantAdmin(admin.ModelAdmin):
+    list_display = ("room", "display_name", "role", "joined_at")
+    list_filter = ("role",)
+
+@admin.register(GameState)
+class GameStateAdmin(admin.ModelAdmin):
+    list_display = ("room", "current_index")

@@ -180,17 +180,19 @@
 
       <!-- Botonera responsive en grid -->
       <div class="btn-grid">
-        <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}">Jugar</a>
-        <a class="btn btn-primary"   href="{% url 'qr_image' pack.pk %}">Descargar QR</a>
+        <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}" style="margin: 0 auto; display: block;">Jugar</a>
+        <a class="btn btn-secondary"   href="{% url 'qr_image' pack.pk %}" style="margin: 0 auto; display: block;">Descargar QR</a>
 
         <!-- El de regenerar es POST: lo metemos en la misma grid -->
         <form method="post" action="{% url 'link_regenerate' pack.pk %}">
           {% csrf_token %}
           <button type="submit" class="btn btn-secondary"
-                  onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')">
+                  onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')" style="margin: 0 auto; display: block;">
             Regenerar enlace único
           </button>
         </form>
+
+        <a class="btn btn-secondary" href="{% url 'room_create' pack.id %}" style="margin: 0 auto; display: block;">Crear Sala Online</a>
       </div>
     </div>
   </div>

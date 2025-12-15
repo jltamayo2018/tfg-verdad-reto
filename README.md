@@ -55,3 +55,42 @@ Resolución de errores, redirecciones y otros
 04/11/2025
 
 Funcionalidad para dar accesos de editor de packs
+
+11/11/25
+
+COMIENZO PARA AÑADIR SESIONES VIDEOCONFERENCIA
+
+pip install channels channels-redis
+configuración del fichero settings.py para la configuración de canales
+
+WSGI (Web Server Gateway Interface) es el estándar clásico que usa Django desde siempre. Diseñado para aplicaciones web sin tiempo real, donde cada petición HTTP empieza y termina de forma independiente.
+ASGI (Asynchronous Server Gateway Interface) es la evolución moderna del WSGI. Soporta protocolos asíncronos, no solo HTTP
+
+configuración del fichero asgi.py
+creación de consumers.py
+urls.py añadimos las salas de juego
+views, las funciones necesarias
+creamos room.html
+creamos los modelos necesarios
+
+12/11/25
+
+Escribiendo directamente la url http://localhost:4000/rooms/create/<id_pck>>/ se crea la sala. El primer problema es que jitsi pide iniciar sesión con google o github y da error 403 (creo que por el incógnito)
+meet.jit.si
+
+16/11/2025
+
+Botón para crear sala creado en la página de detalles del pack
+
+17/11/2025
+
+Se eliminan las salas de la base de datos cuando no se utilizan y caducan.
+
+18/11/2025
+
+Tratando de corregir los errores en la creación de la sala
+
+25/12/2025
+
+Cambios de estilos y retoques en el html
+DB nueva en Neon, ya que en Render es temporal

@@ -30,4 +30,7 @@ urlpatterns = [
     # pública por token
     path('q/<str:token>/', views.publico_por_token, name='publico_por_token'),
 
+    # salas de juego
+    path("rooms/create/<int:pack_id>/", views.create_room, name="room_create"),
+    path("rooms/<slug:code>/", views.room_view, name="room_view"),
 ]

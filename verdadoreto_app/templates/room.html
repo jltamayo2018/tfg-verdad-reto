@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+{% block title %}Sala {{ room.code }}{% endblock %}
+
+{% block content %}
+
+<div class="container room-layout">
+
+  <!-- VIDEO -->
+  <div class="room-video">
+    <div id="jitsi"></div>
+  </div>
+
+  <!-- PANEL DERECHA / ABAJO -->
+  <aside class="neon-card room-panel">
+
+    <h2 class="room-title">Sala: {{ room.code }}</h2>
+
+    <p><strong>Pack:</strong> {{ pack.name }}</p>
+    <p><strong>Estado:</strong> <span id="room-status">{{ room.status }}</span></p>
+
+    {% if is_host %}
+      <button id="btn-start" class="btn btn-primary" {% if room.status != "lobby" %}disabled{% endif %}>
+        Iniciar juego
+      </button>
+
+      <div class="room-nav-buttons">
+        <button id="btn-truth" class="btn btn-secondary" >Verdad</button>
+        <button id="btn-dare"  class="btn btn-secondary" >Reto</button>
+      </div>
+    {% endif %}
+
+    <hr>
+
+    <h3>Pregunta actual</h3>
+    <div id="question-box" class="neon-card room-question-box">
+      <span class="question-text">(A la espera de iniciar…)</span>
+    </div>
+
+  </aside>
+</div>
+
+<!-- JITSI -->
+<script src="https://meet.jit.si/external_api.js"></script>
+
+<script>
+  /* -------------------------
+     JITSI
+  -------------------------- */
+  const api = new JitsiMeetExternalAPI("meet.jit.si", {
+    roomName: "{{ room.code }}",
+    parentNode: document.getElementById("jitsi"),
+    userInfo: { displayName: "{{ display_name|escapejs }}" },
+    configOverwrite: { prejoinConfig: { enabled: true }, startAudioMuted: 1, startVideoMuted: 1 },
+    interfaceConfigOverwrite: { DISABLE_JOIN_LEAVE_NOTIFICATIONS: false }
+  });
+
+  /* -------------------------
+     DATOS SERVER → JS
+  -------------------------- */
+  const isHost    = JSON.parse('{{ is_host|yesno:"true,false"|escapejs }}');
+  const questions = JSON.parse('{{ questions_json|escapejs }}');
+  console.log("questions", questions);
+
+  // Precalcular índices por tipo
+  const truthIndexes = [];
+  const dareIndexes  = [];
+
+  questions.forEach((q, idx) => {
+    if (!q || !q.type) return;
+    if (q.type === "VERDAD") {
+      truthIndexes.push(idx);
+    } else if (q.type === "RETO") {
+      dareIndexes.push(idx);
+    }
+  });
+
+  /* -------------------------
+     WEBSOCKET
+  -------------------------- */
+  const wsProtocol = location.protocol === "https:" ? "wss" : "ws";
+  const wsURL = `${wsProtocol}://${location.host}/ws/rooms/{{ room.code }}/`;
+  const ws = new WebSocket(wsURL);
+  console.log("WS URL:", wsURL);
+
+  let currentIndex = 0;
+
+  const elStatus   = document.getElementById("room-status");
+  const elBox      = document.getElementById("question-box");
+  const btnStart   = document.getElementById("btn-start");
+  const btnTruth   = document.getElementById("btn-truth");
+  const btnDare    = document.getElementById("btn-dare");
+
+  function renderQuestion() {
+    if (questions.length && questions[currentIndex]) {
+      const q = questions[currentIndex];
+      const text = typeof q === "string" ? q : (q.text || JSON.stringify(q));
+      elBox.textContent = text;
+    } else {
+      elBox.textContent = `Pregunta #${currentIndex + 1}`;
+    }
+  }
+
+  function updateTypeButtons() {
+    if (!isHost) return;
+    if (!btnTruth || !btnDare) return;
+
+    // Activar/desactivar según haya preguntas de ese tipo
+    btnTruth.disabled = (truthIndexes.length === 0);
+    btnDare.disabled  = (dareIndexes.length === 0);
+  }
+
+  /* -------------------------
+     WS EVENTS
+  -------------------------- */
+  ws.onopen = () => {
+    console.log("WS OPEN");
+    ws.send(JSON.stringify({ action: "join" }));
+  };
+
+  ws.onclose = (ev) => {
+    console.warn("WS CLOSE", ev.code, ev.reason);
+  };
+
+  ws.onerror = (err) => {
+    console.error("WS ERROR", err);
+  };
+
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.event === "state_init") {
+      elStatus.textContent = data.status;
+      currentIndex = data.index || 0;
+      renderQuestion();
+      toggleNavButtons();
+
+      // si recargamos y la sala YA estaba live, ocultamos el botón
+      if (isHost && btnStart && data.status === "live") {
+        btnStart.style.display = "none";
+      }
+    }
+
+    console.log("WS MESSAGE", data);
+
+    if (data.event === "new_question") {
+      currentIndex = data.index;
+      elStatus.textContent = "live";
+      renderQuestion();
+      toggleNavButtons();
+
+      // primera pregunta recibida ⇒ juego en marcha
+      if (isHost && btnStart) {
+        btnStart.style.display = "none";
+      }
+    }
+  };
+
+  /* -------------------------
+     LISTENERS (solo host)
+  -------------------------- */
+  if (isHost && btnStart) {
+    btnStart.addEventListener("click", () => {
+      ws.send(JSON.stringify({ action: "start" }));
+      btnStart.style.display = "none";
+
+      // Cuando el juego empieza, activamos los botones según haya preguntas
+      updateTypeButtons();
+    });
+  }
+
+  function pickRandomIndex(indexArray) {
+    if (!indexArray.length) return null;
+    const pos = Math.floor(Math.random() * indexArray.length);
+    return indexArray[pos];
+  }
+
+  if (isHost && btnTruth) {
+    btnTruth.addEventListener("click", () => {
+      const idx = pickRandomIndex(truthIndexes);
+      if (idx === null) return;
+      ws.send(JSON.stringify({ action: "next", index: idx }));
+    });
+  }
+
+  if (isHost && btnDare) {
+    btnDare.addEventListener("click", () => {
+      const idx = pickRandomIndex(dareIndexes);
+      if (idx === null) return;
+      ws.send(JSON.stringify({ action: "next", index: idx }));
+    });
+  }
+</script>
+
+{% endblock %}

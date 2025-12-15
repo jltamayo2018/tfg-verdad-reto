@@ -1,7 +1,12 @@
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import User
 import secrets, string
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth import get_user_model
+from django.utils.crypto import get_random_string
+from django.utils import timezone
+
 
 # función para generar un token aleatorio para los enlaces de los packs
 def generar_token(length=22):
@@ -95,3 +100,76 @@ class PackCollaborator(models.Model):
 
     def __str__(self):
         return f"{self.user.username} ({self.get_role_display()}) en {self.pack.name}"
+    
+User = get_user_model()
+
+class VideoRoom(models.Model):
+    code = models.SlugField(unique=True, max_length=64, db_index=True)
+    pack = models.ForeignKey("verdadoreto_app.Pack", on_delete=models.CASCADE, related_name="video_rooms")
+    host = models.ForeignKey(User, on_delete=models.CASCADE, related_name="hosted_video_rooms")
+    status = models.CharField(
+        max_length=20,
+        choices=[("lobby","Lobby"), ("live","En juego"), ("ended","Finalizada")],
+        default="lobby",
+        db_index=True,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    provider = models.CharField(max_length=20, default="jitsi")
+    updated_at = models.DateTimeField(auto_now=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
+
+    def start_ttl(self, minutes=30):
+        self.expires_at = timezone.now() + timedelta(minutes=minutes)
+        self.save(update_fields=["expires_at"])
+
+    def extend_ttl(self, minutes=30):
+        """Renueva la caducidad cuando hay actividad."""
+        if not self.expires_at or self.expires_at < timezone.now():
+            self.start_ttl(minutes)
+        else:
+            self.expires_at = timezone.now() + timedelta(minutes=minutes)
+            self.save(update_fields=["expires_at"])
+
+    @property
+    def is_expired(self):
+        return self.expires_at and self.expires_at < timezone.now()
+
+    @staticmethod
+    def generate_code():
+        return "vr-" + get_random_string(8) + "-" + get_random_string(8)
+
+    def __str__(self):
+        return f"{self.code} — {self.pack} — {self.get_status_display()}"
+    
+    @classmethod
+    def cleanup_expired(cls):
+        """Borra todas las salas expiradas. Devuelve cuántas se han borrado."""
+        qs = cls.objects.filter(
+            expires_at__isnull=False,
+            expires_at__lt=timezone.now()
+        )
+        count = qs.count()
+        qs.delete()
+        return count
+
+class RoomParticipant(models.Model):
+    room = models.ForeignKey(VideoRoom, on_delete=models.CASCADE, related_name="participants")
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="video_participations")
+    display_name = models.CharField(max_length=60)
+    role = models.CharField(max_length=10, choices=[("host","Host"),("player","Player")], default="player")
+    joined_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("room", "user")]  # evita duplicar al mismo user en la sala
+        indexes = [models.Index(fields=["room", "role"])]
+
+    def __str__(self):
+        return f"{self.display_name} @ {self.room.code} ({self.role})"
+
+class GameState(models.Model):
+    room = models.OneToOneField(VideoRoom, on_delete=models.CASCADE, related_name="state")
+    current_index = models.IntegerField(default=0)
+    seed = models.CharField(max_length=40, blank=True)
+
+    def __str__(self):
+        return f"State({self.room.code}) idx={self.current_index}"
