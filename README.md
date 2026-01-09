@@ -90,7 +90,19 @@ Se eliminan las salas de la base de datos cuando no se utilizan y caducan.
 
 Tratando de corregir los errores en la creación de la sala
 
-25/12/2025
+15/12/2025
 
 Cambios de estilos y retoques en el html
 DB nueva en Neon, ya que en Render es temporal
+Push al repo con todos los nuevos cambios de VIDEOROOMS
+Settings actualizado para que funcionen los channels y ASGI
+Cambios en el start command de Render para que haga el despliegue con daphne
+Upstash para la REDIS_URL
+
+08/01/2026
+
+Recopilación de errores y cosas a mejorar
+
+09/01/2026
+
+Icono del 'ojo' añadido a los campos de contraseña en la página de registro

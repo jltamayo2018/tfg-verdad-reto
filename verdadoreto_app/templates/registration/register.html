@@ -20,7 +20,16 @@
 
       <div class="form-row">
         {{ form.password1.label_tag }}
-        {{ form.password1 }}
+        <div class="input-icon">
+          {{ form.password1 }}
+          <button type="button" class="icon-btn js-toggle-pass" data-target="{{ form.password1.id_for_label }}"
+            aria-label="Mostrar u ocultar contraseña" aria-pressed="false">
+            <!-- icono ojo -->
+            <svg class="icon-eye" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 5c5 0 9.27 3.11 11 7-1.73 3.89-6 7-11 7S2.73 15.89 1 12c1.73-3.89 6-7 11-7zm0 3a4 4 0 100 8 4 4 0 000-8z"/>
+            </svg>
+          </button>
+        </div>
         {% for error in form.password1.errors %}
           <p class="field-error">{{ error }}</p>
         {% endfor %}
@@ -28,7 +37,16 @@
 
       <div class="form-row">
         {{ form.password2.label_tag }}
-        {{ form.password2 }}
+        <div class="input-icon">
+          {{ form.password2 }}
+          <button type="button" class="icon-btn js-toggle-pass" data-target="{{ form.password2.id_for_label }}"
+            aria-label="Mostrar u ocultar contraseña" aria-pressed="false">
+            <!-- icono ojo -->
+            <svg class="icon-eye" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 5c5 0 9.27 3.11 11 7-1.73 3.89-6 7-11 7S2.73 15.89 1 12c1.73-3.89 6-7 11-7zm0 3a4 4 0 100 8 4 4 0 000-8z"/>
+            </svg>
+          </button>
+        </div>
         {% for error in form.password2.errors %}
           <p class="field-error">{{ error }}</p>
         {% endfor %}
@@ -42,4 +60,23 @@
     </p>
   </div>
 </div>
+
+<script>
+  (function () {
+    document.querySelectorAll('.js-toggle-pass').forEach((btn) => {
+      const targetId = btn.dataset.target;
+      const input = document.getElementById(targetId);
+
+      if (!input) return;
+
+      btn.addEventListener('click', () => {
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        btn.setAttribute('aria-pressed', String(isPassword));
+        btn.classList.toggle('is-active', isPassword);
+      });
+    });
+  })();
+</script>
+
 {% endblock %}
