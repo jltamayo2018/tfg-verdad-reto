@@ -106,3 +106,6 @@ Recopilación de errores y cosas a mejorar
 09/01/2026
 
 Icono del 'ojo' añadido a los campos de contraseña en la página de registro
+Página decrear/editar acción mejoradas, ya no se permite activar/desactivar la acción
+Página para eliminar acción y pack mejoradas.
+Formulario para crear/editar pack mejorado, el campo 'nivel' ahora tiene opciones

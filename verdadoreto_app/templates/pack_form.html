@@ -24,7 +24,7 @@
         <div class="form-row">
           <label for="{{ form.level.id_for_label }}">Nivel (1 a 5):</label>
           {{ form.level }}
-          <div class="muted" style="margin-top:6px;">Indica el nivel de picantez o dificultad (1 = suave, 5 = extremo).</div>
+          <!-- <div class="muted" style="margin-top:6px;">Indica el nivel de picantez o dificultad (1 = suave, 5 = extremo).</div> -->
           {% if form.level.errors %}<div class="field-error">{{ form.level.errors|join:", " }}</div>{% endif %}
         </div>
 

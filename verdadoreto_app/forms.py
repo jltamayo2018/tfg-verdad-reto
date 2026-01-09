@@ -3,9 +3,18 @@ from .models import Pack, Action, PackCollaborator
 from django.contrib.auth.models import User
 
 class PackForm(forms.ModelForm):
+    LEVEL_CHOICES = [
+        (1, "1 - Suave"),
+        (2, "2 - Tranquilo"),
+        (3, "3 - Medio"),
+        (4, "4 - Duro"),
+        (5, "5 - Extremo"),
+    ]
+
+    level = forms.ChoiceField(choices=LEVEL_CHOICES)
+
     class Meta:
         model = Pack
-        # añadimos los nuevos campos
         fields = ['name', 'category', 'level']  # el owner se asigna en la vista
         labels = {
             'name': 'Nombre del pack',
@@ -19,11 +28,8 @@ class PackForm(forms.ModelForm):
             'category': forms.Select(attrs={
                 'class': 'select-category',
             }),
-            'level': forms.NumberInput(attrs={
-                'min': 1,
-                'max': 5,
-                'step': 1,
-                'class': 'input-level',
+            'level': forms.Select(attrs={
+                'class': 'select-level',
             }),
         }
         help_texts = {
