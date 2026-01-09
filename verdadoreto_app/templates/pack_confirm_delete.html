@@ -1,18 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Borrar pack{% endblock %}
+{% block title %}Eliminar pack{% endblock %}
 
 {% block content %}
   <div class="card neon-card" style="max-width:820px;margin:16px auto;">
-    <h2 class="neon-title" style="margin-bottom:6px;">¿Borrar este pack?</h2>
+    <h2 class="neon-title" style="margin-bottom:6px;">¿Eliminar este pack?</h2>
     <p class="muted" style="margin-top:0;">
-      Vas a borrar <strong>{{ pack.name }}</strong>. 
+      Vas a eliminar <strong>{{ pack.name }}</strong>. 
       <br>Se eliminarán también todas sus preguntas y retos.
     </p>
 
     <form method="post" style="display:flex; gap:12px; align-items:center; justify-content:center; margin-top:16px;">
       {% csrf_token %}
       <button type="submit" class="btn btn-primary" style="background:#ff4d6d;border-color:#ff4d6d;">
-        Sí, borrar
+        Sí, eliminar
       </button>
       <a class="btn btn-ghost" href="{% url 'dashboard' %}">Cancelar</a>
     </form>
