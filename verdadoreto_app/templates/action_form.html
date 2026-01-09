@@ -15,12 +15,6 @@
           {% if form.text.errors %}<div class="field-error">{{ form.text.errors|join:", " }}</div>{% endif %}
         </div>
 
-        <div class="form-row">
-          <label for="{{ form.active.id_for_label }}">Activa:</label>
-          {{ form.active }}
-          {% if form.active.errors %}<div class="field-error">{{ form.active.errors|join:", " }}</div>{% endif %}
-        </div>
-
         <div style="display:flex; gap:12px; justify-content:center; margin-top:12px;">
           <button type="submit" class="btn btn-primary">{{ submit_label|default:"Guardar" }}</button>
           <a class="btn btn-ghost" href="{% url 'pack_detail' pack.pk %}">Cancelar</a>

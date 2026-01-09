@@ -174,7 +174,7 @@ def action_toggle(request, pk, action_id):
     pack = get_object_or_404(Pack, pk=pk)
     if not can_edit_pack(request.user, pack):
         return HttpResponseForbidden("No tienes permiso de administrador para este pack.")
-    action = get_object_or_404(Action, pk=action, pack=pack)
+    action = get_object_or_404(Action, pk=action_id, pack=pack)
     action.active = not action.active
     action.save()
     messages.info(request, f"Acción {'activada' if action.active else 'desactivada'}.")
