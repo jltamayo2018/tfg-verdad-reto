@@ -78,7 +78,7 @@ class Action(models.Model):
 class PackCollaborator(models.Model):
     class Role(models.TextChoices):
         EDITOR = "editor", "Editor"
-        VIEWER = "viewer", "Solo lectura"
+        VIEWER = "viewer", "Lector"
 
     pack = models.ForeignKey(Pack, on_delete=models.CASCADE, related_name='collaborators')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shared_packs')

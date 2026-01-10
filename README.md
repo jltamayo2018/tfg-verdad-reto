@@ -109,3 +109,9 @@ Icono del 'ojo' añadido a los campos de contraseña en la página de registro
 Página decrear/editar acción mejoradas, ya no se permite activar/desactivar la acción
 Página para eliminar acción y pack mejoradas.
 Formulario para crear/editar pack mejorado, el campo 'nivel' ahora tiene opciones
+
+10/01/2026
+
+botón cancelar de editar pack redirecciona correctamente
+botón de editar eliminado de los packs compartidos que solo tengan permiso de lector
+mejorada la sección compartir pack de la página de detalles del pack

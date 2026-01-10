@@ -50,8 +50,19 @@ class ActionForm(forms.ModelForm):
         }
 
 class AddCollaboratorForm(forms.Form):
-    username = forms.CharField(label="Nombre de usuario", max_length=150)
-    role = forms.ChoiceField(choices=PackCollaborator.ROLE_CHOICES, initial=PackCollaborator.EDITOR)
+    username = forms.CharField(
+        label="Usuario",
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            "placeholder": "Nombre de usuario (exacto)"
+        }),
+        help_text="Escribe el nombre de usuario exacto a quien quieres dar acceso."
+    )
+    role = forms.ChoiceField(
+        choices=PackCollaborator.ROLE_CHOICES,
+        initial=PackCollaborator.EDITOR,
+        help_text="Editor puede modificar el pack. Lector solo puede jugarlo."
+    )
 
     def clean(self):
         cleaned = super().clean()
