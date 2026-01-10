@@ -30,7 +30,7 @@
 
         <div style="display:flex; gap:12px; justify-content:center; margin-top:12px;">
           <button type="submit" class="btn btn-primary">{{ submit_label|default:"Guardar" }}</button>
-          <a class="btn btn-ghost" href="{{ cancel_url|default:request.META.HTTP_REFERER|default:'/' }}">Cancelar</a>
+          <a class="btn btn-ghost" href="{{ cancel_url }}">Cancelar</a>
         </div>
       </form>
     </div>

@@ -74,7 +74,7 @@ def pack_edit(request, pk):
     'pack': pack,
     'page_title': 'Editar pack',
     'submit_label': 'Guardar',
-    'cancel_url': reverse('dashboard'),
+    'cancel_url': reverse('pack_detail', kwargs={'pk': pack.pk}),
     })
 
 @login_required
