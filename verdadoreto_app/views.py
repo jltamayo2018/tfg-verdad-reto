@@ -12,6 +12,7 @@ from .models import Action, Pack, PackCollaborator
 from .permissions import can_edit_pack
 import random, qrcode, io
 from .models import VideoRoom, GameState, RoomParticipant
+from django.db.models import OuterRef, Subquery
 
 def home(request):
     return render(request, 'home.html')
@@ -92,7 +93,7 @@ def pack_delete(request, pk):
 def pack_detail(request, pk):
     pack = get_object_or_404(Pack, pk=pk)
     if not can_edit_pack(request.user, pack):
-        return HttpResponseForbidden("No tienes permiso de administrador para este pack.")
+        return render(request, "errors/403.html", {"pack": pack}, status=403)
     verdades = Action.objects.filter(pack=pack, type=Action.Type.VERDAD).order_by('-created_at')
     retos = Action.objects.filter(pack=pack, type=Action.Type.RETO).order_by('-created_at')
 
@@ -348,7 +349,18 @@ def remove_collaborator(request, pk, user_id):
 
 @login_required
 def shared_packs(request):
-    qs = Pack.objects.filter(collaborators__user=request.user).select_related('owner').distinct()
+    role_sq = PackCollaborator.objects.filter(
+        pack=OuterRef("pk"),
+        user=request.user
+    ).values("role")[:1]
+    qs = (
+        Pack.objects
+        .filter(collaborators__user=request.user)
+        .select_related("owner")
+        .distinct()
+        .annotate(my_role=Subquery(role_sq))
+    )
+
     return render(request, "shared_packs.html", {"packs": qs})
 
 @login_required

@@ -30,15 +30,16 @@
                         </div>
                     </a>
 
-                    <!-- Botones flotantes (editar y eliminar pack) -->
-                    <div class="pack-tools" style="position:absolute; right:12px; bottom:12px; display:inline-flex; gap:8px; z-index:2;">
-                        <a href="{% url 'pack_detail' p.pk %}"
-                            class="icon-btn"
-                            title="Detalles del pack"
-                            aria-label="Editar nombre">
-                            <span aria-hidden="true">✏️</span>
-                        </a>
-                    </div>
+                    {% if p.my_role == "editor" %}
+                        <div class="pack-tools" style="position:absolute; right:12px; bottom:12px; display:inline-flex; gap:8px; z-index:2;">
+                            <a href="{% url 'pack_detail' p.pk %}"
+                                class="icon-btn"
+                                title="Detalles del pack"
+                                aria-label="Editar nombre">
+                                <span aria-hidden="true">✏️</span>
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </section>
