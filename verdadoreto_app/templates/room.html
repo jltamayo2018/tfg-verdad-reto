@@ -24,8 +24,8 @@
       </button>
 
       <div class="room-nav-buttons">
-        <button id="btn-truth" class="btn btn-secondary" >Verdad</button>
-        <button id="btn-dare"  class="btn btn-secondary" >Reto</button>
+        <button id="btn-truth" class="btn btn-secondary" disabled>Verdad</button>
+        <button id="btn-dare"  class="btn btn-secondary" disabled>Reto</button>
       </div>
     {% endif %}
 
@@ -124,6 +124,17 @@
   ws.onerror = (err) => {
     console.error("WS ERROR", err);
   };
+
+  function toggleNavButtons() {
+    // Solo el host puede usarlos, y solo cuando la sala esté en live
+    const live = (elStatus.textContent || "").trim() === "live";
+
+    if (btnTruth) btnTruth.style.display = (isHost ? "inline-block" : "none");
+    if (btnDare)  btnDare.style.display  = (isHost ? "inline-block" : "none");
+
+    if (isHost && btnTruth) btnTruth.disabled = !live || truthIndexes.length === 0;
+    if (isHost && btnDare)  btnDare.disabled  = !live || dareIndexes.length === 0;
+  }
 
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);

@@ -115,3 +115,12 @@ Formulario para crear/editar pack mejorado, el campo 'nivel' ahora tiene opcione
 botón cancelar de editar pack redirecciona correctamente
 botón de editar eliminado de los packs compartidos que solo tengan permiso de lector
 mejorada la sección compartir pack de la página de detalles del pack
+
+12/01/2026
+
+Tratando de fixear las VideoRooms. 2 problemas principales:
+1. Error 403 en jitsi. Al embeber jitsi con una API se intenta cargar el login de Google dentro del iframe, lo que resulta en error, ya que Google bloquea mostrarse embebido (por seguridad).
+2. Error al "iniciar juego", no se cambia el estado de la sala, por problemas con el WebSocket.
+
+Función toggleNavButtons() dentro del room.html fixeada
+Mejoras en varias de las funciones del consumers.py, para manejar más errores y que sea más robusto.

@@ -365,7 +365,7 @@ def shared_packs(request):
 
 @login_required
 def create_room(request, pack_id):
-    # Solo el dueño del pack crea sala (ajusta si quieres permitir más casos)
+    # Solo el dueño del pack crea sala
     pack = get_object_or_404(Pack, id=pack_id, owner=request.user)
     code = VideoRoom.generate_code()
     room = VideoRoom.objects.create(code=code, pack=pack, host=request.user)
