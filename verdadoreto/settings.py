@@ -14,9 +14,15 @@ from pathlib import Path
 import os
 import dj_database_url
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+
 DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
+
 SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE_ME_DEV_ONLY")
 
 ALLOWED_HOSTS = [
@@ -45,19 +51,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'verdadoreto_app.apps.VerdadoretoAppConfig',
-    'channels',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'verdadoreto_app.middleware.CleanupVideoRoomsMiddleware',
 ]
 
 ROOT_URLCONF = 'verdadoreto.urls'
@@ -78,11 +82,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'verdadoreto.wsgi.application'
-ASGI_APPLICATION = 'verdadoreto.asgi.application'
 
-# =========================
-# Database (Neon via DATABASE_URL)
-# =========================
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
 DEFAULT_DB_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
 
 db_url = os.environ.get("DATABASE_URL", DEFAULT_DB_URL)
@@ -96,20 +100,6 @@ DATABASES = {
         conn_max_age=600,
         ssl_require=is_postgres,   # <- evita 'sslmode' bajo SQLite
     )
-}
-
-# =========================
-# Channels (Redis required in prod)
-# =========================
-REDIS_URL = os.environ.get("REDIS_URL")
-if not REDIS_URL:
-    raise RuntimeError("REDIS_URL env var is required for Channels in production")
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {"hosts": [REDIS_URL]},
-    }
 }
 
 # Password validation
@@ -137,8 +127,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Idioma predeterminado de django
 # LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-es'
+
 TIME_ZONE = 'UTC'
+
 USE_I18N = True
+
 USE_TZ = True
 
 
@@ -166,3 +159,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # configuración de login/logout
 LOGIN_REDIRECT_URL = '/'   # redirección tras iniciar sesión
 LOGOUT_REDIRECT_URL = '/'            # redirección tras cerrar sesión
+
+# Configuración de Jitsi
+JITSI_APP_ID = os.environ.get("JITSI_APP_ID")
+JITSI_PRIVATE_KEY = os.environ.get("JITSI_PRIVATE_KEY")
+
+if not JITSI_APP_ID or not JITSI_PRIVATE_KEY:
+    raise RuntimeError("JITSI_APP_ID and JITSI_PRIVATE_KEY are required")

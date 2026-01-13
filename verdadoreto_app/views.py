@@ -13,6 +13,7 @@ from .permissions import can_edit_pack
 import random, qrcode, io
 from .models import VideoRoom, GameState, RoomParticipant
 from django.db.models import OuterRef, Subquery
+from .jitsi import generate_jitsi_jwt
 
 def home(request):
     return render(request, 'home.html')
@@ -396,6 +397,14 @@ def room_view(request, code):
     is_host = (room.host_id == request.user.id)
     pack = room.pack
 
+    # Generar el token JWT para Jitsi
+    jitsi_token = generate_jitsi_jwt(
+        room_name=room.code,
+        user_id=str(request.user.id),
+        display_name=rp.display_name,
+        is_moderator=is_host,
+    )
+
     # ------------------------------
     # SERIALIZAR PREGUNTAS DEL PACK
     # ------------------------------
@@ -422,4 +431,5 @@ def room_view(request, code):
         "is_host": is_host,
         "display_name": rp.display_name,
         "questions_json": questions_json,
+        "jitsi_token": jitsi_token,
     })

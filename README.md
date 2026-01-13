@@ -125,3 +125,13 @@ Tratando de fixear las VideoRooms. 2 problemas principales:
 Función toggleNavButtons() dentro del room.html fixeada
 Mejoras en varias de las funciones del consumers.py, para manejar más errores y que sea más robusto.
 Solucionado el punto 2, los cambios de estado y los problemas con el WebSocket, habia caducado la DB del Redis y se había eliminado, además de que la variable del entorno REDIS_URL era rediss://... en lugar de redis://... , es obligatorio usar TLS, por lo que Redis rechazaba la conexión sin esa 's'
+
+13/01/2026
+
+Comienzo con JaaS
+Creación de la clave privada
+Creadas las variables de entorno en Render
+Instalado PyJWT y Cryptography
+jitsi.pycreado con la función para generar el token
+Actualización de room_view dentro del views generando el token
+Configuración de las variables de entorno en el settings
