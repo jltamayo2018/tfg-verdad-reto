@@ -23,16 +23,14 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from verdadoreto_app.consumers import RoomConsumer
-from channels.security.websocket import AllowedHostsOriginValidator
 
 # Router principal: HTTP va a Django; WebSocket va a Channels (AuthMiddlewareStack + URLRouter)
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": AllowedHostsOriginValidator(
-        AuthMiddlewareStack(
-            URLRouter([
-                path("ws/rooms/<str:code>/", RoomConsumer.as_asgi()),
-            ])
-        )
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            # Ruta de WebSocket para las salas de juego
+            path("ws/rooms/<str:code>/", RoomConsumer.as_asgi()),
+        ])
     ),
 })
