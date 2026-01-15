@@ -27,6 +27,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE_ME_DEV_ONLY")
 
 ALLOWED_HOSTS = [
     ".onrender.com",              # Render
+    "tfg-verdad-reto.onrender.com",
     "verdadreto.es",              # tu dominio (cuando lo conectes)
     "www.verdadreto.es",
     "localhost",
@@ -39,8 +40,6 @@ CSRF_TRUSTED_ORIGINS = [
     "https://www.verdadreto.es",
 ]
 
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,17 +50,19 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'verdadoreto_app.apps.VerdadoretoAppConfig',
+    'channels',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'verdadoreto_app.middleware.CleanupVideoRoomsMiddleware', # para limpiar salas expiradas automáticamente
 ]
 
 ROOT_URLCONF = 'verdadoreto.urls'
@@ -82,6 +83,25 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'verdadoreto.wsgi.application'
+ASGI_APPLICATION = 'verdadoreto.asgi.application'
+
+# Configuración de Channels
+# En local (sin REDIS_URL) usa InMemoryChannelLayer (un único proceso).
+# En Render/producción, define la variable de entorno REDIS_URL (p.ej. redis://...).
+REDIS_URL = os.getenv("REDIS_URL")
+if REDIS_URL:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {"hosts": [REDIS_URL]},
+        }
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels.layers.InMemoryChannelLayer",
+        }
+    }
 
 
 # Database
@@ -106,18 +126,10 @@ DATABASES = {
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
 ]
 
 
@@ -127,11 +139,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Idioma predeterminado de django
 # LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-es'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -140,7 +149,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static"]  # para desarrollo
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
@@ -165,5 +174,5 @@ LOGOUT_REDIRECT_URL = '/'            # redirección tras cerrar sesión
 JITSI_APP_ID = os.environ.get("JITSI_APP_ID")
 JITSI_PRIVATE_KEY = os.environ.get("JITSI_PRIVATE_KEY")
 
-if not JITSI_APP_ID or not JITSI_PRIVATE_KEY:
+if not DEBUG and (not JITSI_APP_ID or not JITSI_PRIVATE_KEY):
     raise RuntimeError("JITSI_APP_ID and JITSI_PRIVATE_KEY are required")
