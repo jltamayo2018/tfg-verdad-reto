@@ -14,7 +14,7 @@ def generate_jitsi_jwt(
     payload = {
         "aud": "jitsi",
         "iss": "chat",
-        "sub": settings.JITSI_APP_ID,
+        "sub": "8x8.vc",
         "room": room_name,
         "exp": now + 60 * 60,   # 1 hora
         "nbf": now - 10,
