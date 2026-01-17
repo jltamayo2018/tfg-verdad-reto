@@ -432,5 +432,5 @@ def room_view(request, code):
         "display_name": rp.display_name,
         "questions_json": questions_json,
         "jitsi_token": jitsi_token,
-        "jitsti_app_id": settings.JITSI_APP_ID,
+        "jitsi_app_id": settings.JITSI_APP_ID,
     })
