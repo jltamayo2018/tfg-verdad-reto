@@ -13,7 +13,7 @@ def generate_jitsi_jwt(
 
     payload = {
         "aud": "jitsi",
-        "iss": settings.JITSI_APP_ID,
+        "iss": "chat",
         "sub": settings.JITSI_APP_ID,
         "room": room_name,
         "exp": now + 60 * 60,   # 1 hora
@@ -24,6 +24,12 @@ def generate_jitsi_jwt(
                 "name": display_name,
                 "moderator": is_moderator,
             }
+        },
+        "features": {
+            "livestreaming": False,
+            "recording": False,
+            "transcription": False,
+            "outbound-call": False,
         },
     }
 
