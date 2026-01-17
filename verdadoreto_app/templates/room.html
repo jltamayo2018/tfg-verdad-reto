@@ -39,20 +39,39 @@
   </aside>
 </div>
 
-<!-- JITSI -->
-<script src="https://meet.jit.si/external_api.js"></script>
+<!-- JITSI (JaaS) -->
+<script src="https://8x8.vc/external_api.js"></script>
 
 <script>
   /* -------------------------
-     JITSI
+     JITSI (JaaS + JWT)
   -------------------------- */
-  const api = new JitsiMeetExternalAPI("meet.jit.si", {
-    roomName: "{{ room.code }}",
+  const domain = "8x8.vc";
+
+  // En JaaS el roomName debe incluir el AppID como prefijo
+  const roomName = "{{ jitsi_app_id }}/{{ room.code }}";
+
+  const api = new JitsiMeetExternalAPI(domain, {
+    roomName,
     parentNode: document.getElementById("jitsi"),
+
+    jwt: "{{ jitsi_token|escapejs }}",
+
     userInfo: { displayName: "{{ display_name|escapejs }}" },
-    configOverwrite: { prejoinConfig: { enabled: true }, startAudioMuted: 1, startVideoMuted: 1 },
-    interfaceConfigOverwrite: { DISABLE_JOIN_LEAVE_NOTIFICATIONS: false }
+
+    configOverwrite: {
+      prejoinConfig: { enabled: true },
+      startAudioMuted: 1,
+      startVideoMuted: 1,
+    },
+
+    interfaceConfigOverwrite: {
+      DISABLE_JOIN_LEAVE_NOTIFICATIONS: false,
+    }
   });
+
+  console.log("JITSI_TOKEN length:", "{{ jitsi_token|length }}");
+  console.log("JITSI_TOKEN starts:", "{{ jitsi_token|slice:':20' }}");
 
   /* -------------------------
      DATOS SERVER → JS
@@ -81,9 +100,6 @@
   const wsURL = `${wsProtocol}://${location.host}/ws/rooms/{{ room.code }}/`;
   const ws = new WebSocket(wsURL);
   console.log("WS URL:", wsURL);
-
-  console.log("JITSI_TOKEN length:", "{{ jitsi_token|length }}");
-  console.log("JITSI_TOKEN starts:", "{{ jitsi_token|slice:':20' }}");
 
   let currentIndex = 0;
 

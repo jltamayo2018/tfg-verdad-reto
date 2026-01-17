@@ -1,4 +1,4 @@
-import json
+import json, random, qrcode, io
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.forms import UserCreationForm
@@ -7,12 +7,12 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.http import Http404, HttpResponseForbidden
+from django.conf import settings
+from django.db.models import OuterRef, Subquery
 from .forms import PackForm, ActionForm, AddCollaboratorForm
 from .models import Action, Pack, PackCollaborator
 from .permissions import can_edit_pack
-import random, qrcode, io
 from .models import VideoRoom, GameState, RoomParticipant
-from django.db.models import OuterRef, Subquery
 from .jitsi import generate_jitsi_jwt
 
 def home(request):
@@ -432,4 +432,5 @@ def room_view(request, code):
         "display_name": rp.display_name,
         "questions_json": questions_json,
         "jitsi_token": jitsi_token,
+        "jitsti_app_id": settings.JITSI_APP_ID,
     })
