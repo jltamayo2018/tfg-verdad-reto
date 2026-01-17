@@ -31,6 +31,7 @@ def generate_jitsi_jwt(
         payload,
         settings.JITSI_PRIVATE_KEY,
         algorithm="RS256",
+        headers={"kid": settings.JITSI_KID},
     )
 
     return token

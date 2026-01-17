@@ -173,6 +173,7 @@ LOGOUT_REDIRECT_URL = '/'            # redirección tras cerrar sesión
 # Configuración de Jitsi
 JITSI_APP_ID = os.environ.get("JITSI_APP_ID")
 JITSI_PRIVATE_KEY = os.environ.get("JITSI_PRIVATE_KEY")
+JITSI_KID = os.environ.get("JITSI_KID")
 
-if not DEBUG and (not JITSI_APP_ID or not JITSI_PRIVATE_KEY):
-    raise RuntimeError("JITSI_APP_ID and JITSI_PRIVATE_KEY are required")
+if not DEBUG and (not JITSI_APP_ID or not JITSI_PRIVATE_KEY or not JITSI_KID):
+    raise RuntimeError("JITSI_APP_ID, JITSI_PRIVATE_KEY and JITSI_KID are required")
