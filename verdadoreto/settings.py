@@ -28,6 +28,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "CHANGE_ME_DEV_ONLY")
 ALLOWED_HOSTS = [
     ".onrender.com",              # Render
     "tfg-verdad-reto.onrender.com",
+    "verdadreto.onrender.com",
     "verdadreto.es",              # tu dominio (cuando lo conectes)
     "www.verdadreto.es",
     "localhost",

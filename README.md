@@ -135,3 +135,14 @@ Instalado PyJWT y Cryptography
 jitsi.pycreado con la función para generar el token
 Actualización de room_view dentro del views generando el token
 Configuración de las variables de entorno en el settings
+
+17/01/2026
+
+Continuamos con jitsi
+Solucionadas las salas online mediante JaaS.
+
+19/01/2026
+
+Revisión de cosas a mejorar y testeo de las distintas páginas dentro de la Web
+
+20/01/2026
