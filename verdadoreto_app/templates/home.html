@@ -2,132 +2,48 @@
 {% block title %}Verdad o Reto{% endblock %}
 
 {% block content %}
-<section class="home">
-  <!-- HERO -->
-  <header class="home-hero">
-    <div class="home-hero__content">
-      <h1 class="home-title">Verdad o Reto</h1>
-      <p class="home-subtitle">
-        Crea packs personalizados, compártelos por enlace o QR y juega con tus amigos desde cualquier dispositivo.
-      </p>
+<div class="hero hero-center">
+  <div class="hero-inner">
+    <h1 class="neon-heading">
+      <span class="neon-title">Verdad o Reto</span>
+    </h1>
 
-      <div class="home-cta">
-        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-wide">Jugar ahora</a>
+    <br />
 
-        {# CTA secundario opcional: ajusta la url si existe #}
-        {# <a href="{% url 'pack_create' %}" class="btn btn-secondary btn-wide">Crear pack</a> #}
+    <!-- Cuadro único con filas -->
+    <div class="features-box neon-card">
+      <div class="features-row">
+        <div class="features-emoji">🧰</div>
+        <div class="features-text">Crea tus propios packs con preguntas y retos personalizados</div>
       </div>
 
-      <ul class="home-badges" aria-label="Ventajas rápidas">
-        <li class="badge">Sin instalaciones</li>
-        <li class="badge">Packs editables</li>
-        <li class="badge">Compartir por QR</li>
-      </ul>
-    </div>
-
-    <!-- Panel visual (puede ser texto/ilustración; sin imágenes si no quieres) -->
-    <div class="home-hero__panel neon-card">
-      <div class="panel-title">¿Qué puedes hacer?</div>
-      <ol class="panel-steps">
-        <li><strong>Crea</strong> packs (verdad / reto) por categorías.</li>
-        <li><strong>Comparte</strong> con enlace o QR.</li>
-        <li><strong>Juega</strong> en grupo desde el móvil.</li>
-      </ol>
-      <div class="panel-hint">Tip: guarda tus packs y reutilízalos en futuras partidas.</div>
-    </div>
-  </header>
-
-  <!-- SECCIÓN: CONTENIDO REAL (ya no “tres tarjetas-botón”) -->
-  <section class="home-section">
-    <h2 class="section-title">Todo en un solo lugar</h2>
-    <p class="section-lead">
-      Tu cuenta te permite crear, organizar y compartir contenido para jugar rápido sin perder tiempo.
-    </p>
-
-    <div class="info-grid">
-      <article class="info-card">
-        <div class="info-icon" aria-hidden="true">🧰</div>
-        <h3 class="info-title">Packs</h3>
-        <p class="info-text">
-          Crea y organiza packs propios. Úsalos en cualquier momento y mantén tu biblioteca lista.
-        </p>
-      </article>
-
-      <article class="info-card">
-        <div class="info-icon" aria-hidden="true">🔗</div>
-        <h3 class="info-title">Compartir</h3>
-        <p class="info-text">
-          Comparte tus packs mediante enlace o QR para que cualquiera pueda acceder desde su móvil.
-        </p>
-      </article>
-
-      <article class="info-card">
-        <div class="info-icon" aria-hidden="true">🎉</div>
-        <h3 class="info-title">Jugar en grupo</h3>
-        <p class="info-text">
-          Experiencia rápida y adaptable a móvil. Ideal para fiestas, reuniones y momentos improvisados.
-        </p>
-      </article>
-
-      {# Si tu proyecto tiene salas online / partida compartida, añade una cuarta #}
-      <article class="info-card">
-        <div class="info-icon" aria-hidden="true">🌐</div>
-        <h3 class="info-title">Salas</h3>
-        <p class="info-text">
-          Crea una sala y juega con amigos estés donde estés. Perfecto para grupos a distancia.
-        </p>
-      </article>
-    </div>
-  </section>
-
-  <!-- SECCIÓN: HOW IT WORKS -->
-  <section class="home-section">
-    <h2 class="section-title">Cómo se juega</h2>
-
-    <div class="how-grid">
-      <div class="how-step">
-        <div class="how-num">1</div>
-        <div>
-          <h3 class="how-title">Accede al panel</h3>
-          <p class="how-text">Entra en “Mis packs” y elige uno para jugar o crear uno nuevo.</p>
-        </div>
+      <div class="features-row">
+        <div class="features-emoji">👥</div>
+        <div class="features-text">Da acceso a otras personas para que editen tus packs y sea más fácil crearlos</div>
       </div>
 
-      <div class="how-step">
-        <div class="how-num">2</div>
-        <div>
-          <h3 class="how-title">Comparte si quieres</h3>
-          <p class="how-text">Genera un enlace/QR para que tus amigos lo abran al instante.</p>
-        </div>
+      <div class="features-row">
+        <div class="features-emoji">🔗</div>
+        <div class="features-text">Comparte tus packs mediante enlace o QR para jugar al instante</div>
       </div>
 
-      <div class="how-step">
-        <div class="how-num">3</div>
-        <div>
-          <h3 class="how-title">Empieza la partida</h3>
-          <p class="how-text">Turnos rápidos: elige verdad o reto y disfruta.</p>
-        </div>
+      <div class="features-row">
+        <div class="features-emoji">🎉</div>
+        <div class="features-text">Disfruta con tus amigos desde cualquier dispositivo</div>
+      </div>
+
+      <div class="features-row">
+        <div class="features-emoji">🌐</div>
+        <div class="features-text">Crea una sala y juega con tus amigos estés donde estés</div>
       </div>
     </div>
 
-    <div class="home-cta home-cta--center">
-      <a href="{% url 'dashboard' %}" class="btn btn-primary btn-wide">Ir al dashboard</a>
-      {# <a href="{% url 'packs_list' %}" class="btn btn-ghost btn-wide">Ver packs</a> #}
-    </div>
-  </section>
+    <br />
 
-  <!-- SECCIÓN FINAL: CTA -->
-  <section class="home-final neon-card">
-    <div>
-      <h2 class="final-title">¿Listo para jugar?</h2>
-      <p class="final-text">
-        Entra al dashboard y empieza una partida en segundos.
-      </p>
-    </div>
-    <div class="final-actions">
+    <div class="actions">
       <a href="{% url 'dashboard' %}" class="btn btn-primary btn-wide">Jugar ahora</a>
-      {# <a href="{% url 'pack_create' %}" class="btn btn-secondary btn-wide">Crear pack</a> #}
+      {# <a href="{% url 'pack_create' %}" class="btn btn-secondary btn-wide">Crear mi primer pack</a> #}
     </div>
-  </section>
-</section>
+  </div>
+</div>
 {% endblock %}
