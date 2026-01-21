@@ -172,34 +172,100 @@
     </details>
   </div>
 
-  <!-- ENLACE PÚBLICO (TOKEN ÚNICO) -->
-  <div class="card neon-card public-links">
-    <h3>Enlace público</h3>
+  {# ====== COMPARTIR Y JUGAR ====== #}
+  {% url 'publico_por_token' pack.token as public_path %}
+  {% with full_public_url=request.scheme|add:"://"|add:request.get_host|add:public_path %}
 
-    <div class="public-block">
-      <p class="link-line">
-        <strong>URL del pack:</strong>
-        <a class="url-badge" id="link-pack" href="{% url 'publico_por_token' pack.token %}">
-          {% url 'publico_por_token' pack.token %}
-        </a>
-      </p>
+  <div class="card neon-card share-panel">
+    <h3 class="share-title">Compartir y jugar</h3>
 
-      <!-- Botonera responsive en grid -->
-      <div class="btn-grid">
-        <a class="btn btn-secondary" href="{% url 'publico_por_token' pack.token %}" style="margin: 0 auto; display: block;">Jugar</a>
-        <a class="btn btn-secondary"   href="{% url 'qr_image' pack.pk %}" style="margin: 0 auto; display: block;">Descargar QR</a>
+    <p class="share-sub">
+      Comparte el enlace y juega al instante.
+    </p>
 
-        <!-- El de regenerar es POST: lo metemos en la misma grid -->
-        <form method="post" action="{% url 'link_regenerate' pack.pk %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-secondary"
-                  onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')" style="margin: 0 auto; display: block;">
-            Regenerar enlace único
-          </button>
-        </form>
+    <div class="share-link-row">
+      <a class="url-badge share-url" id="publicLink"
+        href="{{ public_path }}"
+        target="_blank" rel="noopener">
+        {{ full_public_url }}
+      </a>
 
-        <a class="btn btn-secondary" href="{% url 'room_create' pack.id %}" style="margin: 0 auto; display: block;">Crear Sala Online</a>
-      </div>
+      <button type="button" class="icon-btn share-copy"
+              onclick="copyPublicLink()"
+              aria-label="Copiar enlace">
+        <span aria-hidden="true">📋</span>
+      </button>
     </div>
+
+    <section class="share-actions-grid" aria-label="Acciones del pack">
+      <!-- Jugar -->
+      <a href="{{ public_path }}" class="action-card neon-card" aria-label="Jugar">
+        <div class="action-card__emoji" aria-hidden="true">🎮</div>
+        <div class="action-card__title">Jugar</div>
+        <div class="action-card__hint">Abrir la vista pública</div>
+      </a>
+
+      <!-- Descargar QR -->
+      <a href="{% url 'qr_image' pack.pk %}" class="action-card neon-card" aria-label="Descargar QR">
+        <div class="action-card__emoji" aria-hidden="true">🔳</div>
+        <div class="action-card__title">Descargar QR</div>
+        <div class="action-card__hint">Para compartir rápido</div>
+      </a>
+
+      <!-- Regenerar enlace (POST) -->
+      <form method="post" action="{% url 'link_regenerate' pack.pk %}" class="action-form">
+        {% csrf_token %}
+        <button type="submit"
+                class="action-card neon-card action-card--danger"
+                onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')"
+                aria-label="Regenerar enlace">
+          <div class="action-card__emoji" aria-hidden="true">🔁</div>
+          <div class="action-card__title">Regenerar enlace</div>
+          <div class="action-card__hint">El anterior dejará de funcionar</div>
+        </button>
+      </form>
+
+      <!-- Crear sala online -->
+      <a href="{% url 'room_create' pack.id %}" class="action-card neon-card" aria-label="Crear sala online">
+        <div class="action-card__emoji" aria-hidden="true">🌐</div>
+        <div class="action-card__title">Crear sala online</div>
+        <div class="action-card__hint">Jugar en grupo en directo</div>
+      </a>
+    </section>
+
+    <p class="share-toast" id="copyToast" role="status" aria-live="polite"></p>
   </div>
+
+  <script>
+    function copyPublicLink() {
+      const text = document.getElementById("publicLink").textContent.trim();
+      const toast = document.getElementById("copyToast");
+
+      const done = () => {
+        toast.textContent = "✅ Enlace copiado";
+        toast.classList.add("is-visible");
+        setTimeout(() => toast.classList.remove("is-visible"), 1600);
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+      } else {
+        fallbackCopy(text, done);
+      }
+
+      function fallbackCopy(t, cb) {
+        const ta = document.createElement("textarea");
+        ta.value = t;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch(e) {}
+        document.body.removeChild(ta);
+        cb();
+      }
+    }
+  </script>
+
+  {% endwith %}
 {% endblock %}
