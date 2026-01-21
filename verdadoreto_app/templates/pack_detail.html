@@ -177,17 +177,27 @@
     <h3 class="pack-share__title">Compartir y jugar</h3>
 
     <div class="pack-share__panel">
-      <!-- Barra superior: texto + copiar (una sola línea) -->
-      <div class="pack-share__topbar" aria-label="Copiar enlace del pack">
-        <strong class="pack-share__toptext">Comparte el enlace y juega al instante</strong>
+      <div class="pack-share__row">
+        <p class="pack-share__lead">
+          <strong>Comparte el enlace y juega al instante</strong>
+        </p>
 
-        <button type="button"
-                class="icon-btn pack-share__copybtn"
-                id="copy-pack-link"
-                title="Copiar enlace"
-                aria-label="Copiar enlace">
-          📋
-        </button>
+        <div class="pack-share__copy">
+          <a id="share-link"
+            class="pack-share__url"
+            href="{% url 'publico_por_token' pack.token %}"
+            target="_blank" rel="noopener">
+            {% url 'publico_por_token' pack.token %}
+          </a>
+
+          <button type="button"
+                  class="icon-btn pack-share__copybtn"
+                  id="copy-pack-link"
+                  title="Copiar enlace"
+                  aria-label="Copiar enlace">
+            📋
+          </button>
+        </div>
       </div>
 
       <!-- 4 tarjetas -->
@@ -199,7 +209,7 @@
           <header class="pack-share-card__head">
             <h4 class="pack-share-card__title">Jugar</h4>
           </header>
-          <div class="pack-share-card__emoji" aria-hidden="true">▶️</div>
+          <div class="pack-share-card__emoji" aria-hidden="true">🎮</div>
           <div class="pack-share-card__foot">
             <span class="pack-share-card__hint">Abrir pack</span>
           </div>
@@ -214,7 +224,7 @@
           </header>
           <div class="pack-share-card__emoji" aria-hidden="true">📷</div>
           <div class="pack-share-card__foot">
-            <span class="pack-share-card__hint">Descargar QR</span>
+            <span class="pack-share-card__hint">Descargar</span>
           </div>
         </a>
 
@@ -244,7 +254,7 @@
           </header>
           <div class="pack-share-card__emoji" aria-hidden="true">🎥</div>
           <div class="pack-share-card__foot">
-            <span class="pack-share-card__hint">Crear sala online</span>
+            <span class="pack-share-card__hint">Crear online</span>
           </div>
         </a>
       </section>

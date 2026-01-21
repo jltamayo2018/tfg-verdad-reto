@@ -991,27 +991,47 @@ nav{ line-height: 1; }
   background: rgba(255,255,255,.03);
 }
 
-/* Topbar: una sola línea + botón */
-.pack-share__topbar{
-  display:flex;
-  align-items:center;
-  justify-content: space-between;
+.pack-share__row{
+  display: grid;
   gap: 10px;
   margin-bottom: 14px;
 }
 
-.pack-share__toptext{
-  flex: 1;
-  min-width: 0;
-  white-space: nowrap;       /* 1 línea */
+.pack-share__lead{
+  margin: 0;
+  line-height: 1.3;
+}
+
+.pack-share__copy{
+  display:flex;
+  gap: 10px;
+  align-items:center;
+  flex-wrap: wrap;
+}
+
+/* URL estilo badge propio */
+.pack-share__url{
+  display:block;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #ff00cc;
+  max-width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;    /* si no cabe, ... */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pack-share__url:hover{
+  text-shadow: 0 0 8px #ff00cc;
 }
 
 /* Botón copiar (hereda .icon-btn) */
-.pack-share__copybtn{ margin-left: 0; }
+.pack-share__copybtn{
+  margin-left: 0;
+}
 
-/* GRID propio */
+/* GRID propio (sin tocar .packs-grid) */
 .pack-share-grid{
   display:grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
@@ -1025,16 +1045,13 @@ nav{ line-height: 1; }
   .pack-share-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
 }
 
-/* TARJETA (aislada) */
+/* TARJETA de acción (clon visual de pack-card, pero aislado) */
 .pack-share-card{
   position: relative;
   display: block;
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-
-  /* Reservamos espacio arriba y abajo para evitar solapes */
-  padding: 18px 14px 64px;
-
+  padding: 14px 14px 56px; /* hueco abajo para “hint” */
   background: rgba(255,255,255,0.05);
   color:#fff;
   text-decoration:none;
@@ -1046,7 +1063,7 @@ nav{ line-height: 1; }
   filter: brightness(1.05);
 }
 
-/* button dentro de form */
+/* Si es button dentro de form */
 .pack-share-form{ margin:0; }
 .pack-share-form .pack-share-card{
   width: 100%;
@@ -1054,15 +1071,13 @@ nav{ line-height: 1; }
   cursor: pointer;
 }
 
-/* Header: centrado arriba */
+/* Cabecera / título */
 .pack-share-card__head{
   position: relative;
-  z-index: 3;
-  text-align: center;
+  z-index: 2;
   margin: 2px 0 0;
+  text-align: center;
 }
-
-/* Título */
 .pack-share-card__title{
   margin: 0;
   font-weight: 800;
@@ -1071,17 +1086,12 @@ nav{ line-height: 1; }
   letter-spacing: .2px;
   text-shadow: 0 2px 10px rgba(0,0,0,.35);
   overflow-wrap: anywhere;
-
-  /* Ayuda a que el título siempre quede arriba y no “se mezcle” visualmente */
-  padding: 0 4px;
 }
 
-/* Emoji: lo bajamos para que NO invada el título */
+/* Emoji centrado */
 .pack-share-card__emoji{
   position: absolute;
-  left: 0; right: 0;
-  top: 40px;                 /* 👈 clave: deja “zona segura” para el título */
-  bottom: 56px;              /* deja “zona segura” para el hint */
+  inset: 0;
   display: grid;
   place-items: center;
   font-size: clamp(52px, 10vw, 84px);
@@ -1091,33 +1101,28 @@ nav{ line-height: 1; }
   z-index: 1;
 }
 
-/* Footer: centrado abajo */
+/* Footer tipo “chip” abajo izquierda */
 .pack-share-card__foot{
   position: absolute;
   left: 12px;
   right: 12px;
   bottom: 12px;
-  z-index: 3;
-  display:flex;
-  justify-content: center;   /* 👈 centrado */
+  z-index: 2;
 }
-
-/* Hint centrado y sin solape */
 .pack-share-card__hint{
   display: inline-block;
   max-width: 100%;
   background: rgba(0,0,0,.25);
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 999px;
   font-size: 14px;
-  opacity: .92;
+  opacity: .9;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
 }
 
-/* Variante “peligro” */
+/* Variante “peligro” (sutil) */
 .pack-share-card--danger{
   box-shadow: 0 0 0 1px rgba(255, 60, 140, .35) inset;
 }
