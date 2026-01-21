@@ -172,100 +172,103 @@
     </details>
   </div>
 
-  {# ====== COMPARTIR Y JUGAR ====== #}
-  {% url 'publico_por_token' pack.token as public_path %}
-  {% with full_public_url=request.scheme|add:"://"|add:request.get_host|add:public_path %}
+    <!-- ENLACE PÚBLICO (TOKEN ÚNICO) -->
+  <div class="card neon-card public-links">
+    <h3>Compartir y jugar</h3>
 
-  <div class="card neon-card share-panel">
-    <h3 class="share-title">Compartir y jugar</h3>
+    <div class="public-block">
+      <p class="link-line" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <strong>Comparte el enlace y juega al instante</strong>
 
-    <p class="share-sub">
-      Comparte el enlace y juega al instante.
-    </p>
+        <a class="url-badge" id="link-pack" href="{% url 'publico_por_token' pack.token %}">
+          {% url 'publico_por_token' pack.token %}
+        </a>
 
-    <div class="share-link-row">
-      <a class="url-badge share-url" id="publicLink"
-        href="{{ public_path }}"
-        target="_blank" rel="noopener">
-        {{ full_public_url }}
-      </a>
-
-      <button type="button" class="icon-btn share-copy"
-              onclick="copyPublicLink()"
-              aria-label="Copiar enlace">
-        <span aria-hidden="true">📋</span>
-      </button>
-    </div>
-
-    <section class="share-actions-grid" aria-label="Acciones del pack">
-      <!-- Jugar -->
-      <a href="{{ public_path }}" class="action-card neon-card" aria-label="Jugar">
-        <div class="action-card__emoji" aria-hidden="true">🎮</div>
-        <div class="action-card__title">Jugar</div>
-        <div class="action-card__hint">Abrir la vista pública</div>
-      </a>
-
-      <!-- Descargar QR -->
-      <a href="{% url 'qr_image' pack.pk %}" class="action-card neon-card" aria-label="Descargar QR">
-        <div class="action-card__emoji" aria-hidden="true">🔳</div>
-        <div class="action-card__title">Descargar QR</div>
-        <div class="action-card__hint">Para compartir rápido</div>
-      </a>
-
-      <!-- Regenerar enlace (POST) -->
-      <form method="post" action="{% url 'link_regenerate' pack.pk %}" class="action-form">
-        {% csrf_token %}
-        <button type="submit"
-                class="action-card neon-card action-card--danger"
-                onclick="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.')"
-                aria-label="Regenerar enlace">
-          <div class="action-card__emoji" aria-hidden="true">🔁</div>
-          <div class="action-card__title">Regenerar enlace</div>
-          <div class="action-card__hint">El anterior dejará de funcionar</div>
+        <button type="button" class="icon-btn" id="copy-pack-link" title="Copiar enlace" aria-label="Copiar enlace">
+          📋
         </button>
-      </form>
+      </p>
 
-      <!-- Crear sala online -->
-      <a href="{% url 'room_create' pack.id %}" class="action-card neon-card" aria-label="Crear sala online">
-        <div class="action-card__emoji" aria-hidden="true">🌐</div>
-        <div class="action-card__title">Crear sala online</div>
-        <div class="action-card__hint">Jugar en grupo en directo</div>
-      </a>
-    </section>
+      <!-- 4 tarjetas, estilo "Mis packs" -->
+      <section class="packs-grid" aria-label="Acciones de enlace público" style="margin-top:14px;">
+        <!-- Jugar -->
+        <div class="pack-card-wrap" style="position:relative;">
+          <a href="{% url 'publico_por_token' pack.token %}" class="pack-card neon-card" aria-label="Jugar">
+            <header class="pack-card__head">
+              <h3 class="pack-card__title">Jugar</h3>
+            </header>
+            <div class="pack-card__emoji">🎮</div>
+            <div class="pack-card__level">
+              <span class="stars muted">Abrir pack</span>
+            </div>
+          </a>
+        </div>
 
-    <p class="share-toast" id="copyToast" role="status" aria-live="polite"></p>
+        <!-- Descargar QR -->
+        <div class="pack-card-wrap" style="position:relative;">
+          <a href="{% url 'qr_image' pack.pk %}" class="pack-card neon-card" aria-label="Descargar QR">
+            <header class="pack-card__head">
+              <h3 class="pack-card__title">QR</h3>
+            </header>
+            <div class="pack-card__emoji">📷</div>
+            <div class="pack-card__level">
+              <span class="stars muted">Descargar</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Regenerar enlace (POST) -->
+        <div class="pack-card-wrap" style="position:relative;">
+          <form method="post" action="{% url 'link_regenerate' pack.pk %}"
+                onsubmit="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.');">
+            {% csrf_token %}
+            <button type="submit" class="pack-card neon-card" style="cursor:pointer; width:100%; border:0;">
+              <header class="pack-card__head">
+                <h3 class="pack-card__title">Regenerar</h3>
+              </header>
+              <div class="pack-card__emoji">🔁</div>
+              <div class="pack-card__level">
+                <span class="stars muted">Nuevo enlace</span>
+              </div>
+            </button>
+          </form>
+        </div>
+
+        <!-- Sala online -->
+        <div class="pack-card-wrap" style="position:relative;">
+          <a href="{% url 'room_create' pack.id %}" class="pack-card neon-card" aria-label="Crear Sala Online">
+            <header class="pack-card__head">
+              <h3 class="pack-card__title">Sala</h3>
+            </header>
+            <div class="pack-card__emoji">🎥</div>
+            <div class="pack-card__level">
+              <span class="stars muted">Crear online</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
   </div>
 
   <script>
-    function copyPublicLink() {
-      const text = document.getElementById("publicLink").textContent.trim();
-      const toast = document.getElementById("copyToast");
+    (function () {
+      const btn = document.getElementById('copy-pack-link');
+      const linkEl = document.getElementById('link-pack');
+      if (!btn || !linkEl) return;
 
-      const done = () => {
-        toast.textContent = "✅ Enlace copiado";
-        toast.classList.add("is-visible");
-        setTimeout(() => toast.classList.remove("is-visible"), 1600);
-      };
-
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
-      } else {
-        fallbackCopy(text, done);
-      }
-
-      function fallbackCopy(t, cb) {
-        const ta = document.createElement("textarea");
-        ta.value = t;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand("copy"); } catch(e) {}
-        document.body.removeChild(ta);
-        cb();
-      }
-    }
+      btn.addEventListener('click', async () => {
+        try {
+          // Si tu <a> muestra ruta relativa, copiamos URL absoluta:
+          const url = new URL(linkEl.getAttribute('href'), window.location.origin).toString();
+          await navigator.clipboard.writeText(url);
+          btn.classList.add('is-active');
+          setTimeout(() => btn.classList.remove('is-active'), 700);
+        } catch (e) {
+          // fallback simple
+          window.prompt("Copia el enlace:", linkEl.href);
+        }
+      });
+    })();
   </script>
 
-  {% endwith %}
 {% endblock %}
