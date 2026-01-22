@@ -1101,29 +1101,40 @@ nav{ line-height: 1; }
   z-index: 1;
 }
 
-/* Footer tipo “chip” abajo izquierda */
+/* Footer tipo “chip” centrado abajo */
 .pack-share-card__foot{
   position: absolute;
-  left: 12px;
-  right: 12px;
+  left: 0;
+  right: 0;
   bottom: 12px;
-  z-index: 2;
+  z-index: 3;
+
   display: flex;
   justify-content: center;   /* centra horizontal */
+  pointer-events: none;      /* evita interferir con hover */
 }
 
+/* Chip */
 .pack-share-card__hint{
-  display: inline-block;
-  max-width: 100%;
-  background: rgba(0,0,0,.25);
-  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(0,0,0,.35);
+  padding: 6px 14px;
   border-radius: 999px;
+
   font-size: 14px;
-  opacity: .9;
+  opacity: .92;
+
   white-space: nowrap;
+  max-width: calc(100% - 24px);
   overflow: hidden;
   text-overflow: ellipsis;
+
+  pointer-events: auto;      /* el chip sí es interactivo */
 }
+
 
 /* Variante “peligro” (sutil) */
 .pack-share-card--danger{
