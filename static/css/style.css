@@ -1292,19 +1292,17 @@ nav{ line-height: 1; }
    (solo afecta al botón)
 ========================= */
 
-/* Reseteo fuerte del botón para que se comporte como <a> */
-.pack-share-card--regen{
-  appearance: none;
-  -webkit-appearance: none;
+.pack-share-form--regen > .pack-share-card--regen{
+  display: block !important;
+  width: 100%;
   border: 0;
-  background: rgba(255, 80, 80, 0.10); /* conserva danger aunque sea button */
+  outline: 0;
+  background: rgba(255, 80, 80, 0.10);
   color: inherit;
   font: inherit;
   text-align: inherit;
-
-  /* MUY IMPORTANTE: evita alineaciones raras del button */
-  display: block;
-  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 /* Subimos el título ligeramente para que quede como las demás */
@@ -1330,4 +1328,53 @@ nav{ line-height: 1; }
   left: 12px;
   right: 12px;
   bottom: 12px;
+}
+
+/* Asegura que el button no herede comportamientos raros (flex, etc.) */
+.pack-share-form--regen > .pack-share-card--regen{
+  display: block !important;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: rgba(255, 80, 80, 0.10);
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* 🔒 TÍTULO ANCLADO ARRIBA */
+.pack-share-card--regen .pack-share-card__head--regen{
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  z-index: 3;
+}
+
+/* Mantén el texto por encima de todo */
+.pack-share-card--regen .pack-share-card__title--regen{
+  margin: 0;
+  position: relative;
+  z-index: 3;
+}
+
+/* El emoji centrado: si quieres, lo bajamos un pelín para que no “pise” al título */
+.pack-share-card--regen .pack-share-card__emoji--regen{
+  transform: translateY(6px);
+}
+
+/* El pie sigue abajo centrado */
+.pack-share-card--regen .pack-share-card__foot--regen{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  place-items: center;
+  z-index: 3;
 }
