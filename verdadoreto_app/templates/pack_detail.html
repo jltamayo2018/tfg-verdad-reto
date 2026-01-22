@@ -183,6 +183,13 @@
         </p>
 
         <div class="pack-share__copy">
+          <a id="share-link"
+            class="pack-share__url"
+            href="{% url 'publico_por_token' pack.token %}"
+            target="_blank" rel="noopener">
+            {% url 'publico_por_token' pack.token %}
+          </a>
+
           <button type="button"
                   class="icon-btn pack-share__copybtn"
                   id="copy-pack-link"

@@ -927,6 +927,77 @@ nav{ line-height: 1; }
   margin-top: 1rem;
 }
 
+/* ====== COPIAR ENLACE SALA ====== */
+.room-share{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin: .5rem 0 1rem;
+}
+
+.room-share__label{
+  opacity: .9;
+  font-weight: 600;
+}
+
+.btn-copy{
+  white-space: nowrap;
+  padding: .55rem .9rem;
+}
+
+.copy-feedback{
+  display: block;
+  min-height: 1.2em;
+  opacity: .9;
+  margin-bottom: .5rem;
+}
+
+/* ====== VERDAD / RETO EN DOS COLUMNAS (TAMBIÉN EN MÓVIL) ====== */
+.room-nav-buttons{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+
+.room-nav-buttons .btn{
+  width: 100%;
+}
+
+/* ====== PREGUNTA MÁS LEGIBLE ====== */
+.room-question-box{
+  min-height: 150px;
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  align-items: center;
+
+  /* fondo más limpio y contraste alto */
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(6px);
+
+  color: #fff;
+  text-shadow: none;
+}
+
+.room-question-box::after{
+  /* desactivamos el fondo anterior */
+  content: none;
+}
+
+.question-text{
+  font-size: 1.15rem;
+  font-weight: 650;
+  line-height: 1.45;
+  letter-spacing: .2px;
+}
+
+
+/* =========================
+   HOME
+========================= */
+
 /* Home: cuadro único con filas informativas */
 .features-box {
   max-width: 720px;
@@ -1045,19 +1116,26 @@ nav{ line-height: 1; }
   .pack-share-grid{ grid-template-columns: repeat(4, minmax(0,1fr)); }
 }
 
-/* TARJETA de acción (clon visual de pack-card, pero aislado) */
+/* TARJETA de acción: ahora con GRID (título arriba, icono centro, chip abajo) */
 .pack-share-card{
   position: relative;
-  display: block;
+  display: grid;                       /* 👈 clave */
+  grid-template-rows: auto 1fr auto;   /* 👈 3 zonas */
+  align-items: stretch;
+  justify-items: center;
+
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-  padding: 14px 14px 56px; /* hueco abajo para “hint” */
+  padding: 14px;
   background: rgba(255,255,255,0.05);
   color:#fff;
   text-decoration:none;
   overflow: hidden;
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+
+  text-align: center;                 /* títulos centrados */
 }
+
 .pack-share-card:hover{
   transform: translateY(-2px);
   filter: brightness(1.05);
@@ -1068,21 +1146,16 @@ nav{ line-height: 1; }
 
 /* Reset completo del botón-tarjeta para que sea idéntico al <a> */
 .pack-share-form .pack-share-card{
+  width: 100%;
+  border: 0;
+  background: rgba(255,255,255,0.05);
+
   appearance: none;
   -webkit-appearance: none;
 
-  background: rgba(255,255,255,0.05);
-  color: #fff;
-
-  border: 0;
-  padding: 18px 14px 64px;   /* mismo padding que la tarjeta */
-  margin: 0;
-
-  width: 100%;
-  display: block;
-
-  text-align: inherit;
   font: inherit;
+  color: inherit;
+  text-align: inherit;
   line-height: inherit;
 
   cursor: pointer;
@@ -1100,23 +1173,27 @@ nav{ line-height: 1; }
   margin: 2px 0 0;
   text-align: center;
 }
+
+/* Importante: evita que un título largo empuje el icono demasiado */
 .pack-share-card__title{
   margin: 0;
   font-weight: 800;
   font-size: clamp(18px, 4.4vw, 26px);
-  line-height: 1.2;
+  line-height: 1.15;
   letter-spacing: .2px;
   text-shadow: 0 2px 10px rgba(0,0,0,.35);
-  overflow-wrap: anywhere;
+
+  /* para que no se parta en 2 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
 }
 
-/* Emoji: zona central sin invadir título ni el hint */
+/* Emoji / icono (fila 2) — SIEMPRE centrado */
 .pack-share-card__emoji{
-  position: absolute;
-  left: 0; right: 0;
-
-  top: 56px;        /* antes 40px -> más espacio para el título */
-  bottom: 64px;     /* deja espacio para el hint */
+  grid-row: 2;
+  z-index: 1;
 
   display: grid;
   place-items: center;
@@ -1125,7 +1202,9 @@ nav{ line-height: 1; }
   line-height: 1;
   filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
   pointer-events: none;
-  z-index: 1;
+
+  /* para que no “se pegue” al título/chip */
+  padding: 8px 0;
 }
 
 /* En móviles, aún más margen porque el título puede partir en 2 líneas */
@@ -1136,17 +1215,15 @@ nav{ line-height: 1; }
 }
 
 
-/* Footer tipo “chip” centrado abajo */
+/* Footer / chip (fila 3) — centrado abajo */
 .pack-share-card__foot{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12px;
-  z-index: 3;
+  grid-row: 3;
+  z-index: 2;
+  width: 100%;
 
   display: flex;
-  justify-content: center;   /* centra horizontal */
-  pointer-events: none;      /* evita interferir con hover */
+  justify-content: center;
+  padding-top: 8px;
 }
 
 /* Chip */
@@ -1163,11 +1240,9 @@ nav{ line-height: 1; }
   opacity: .92;
 
   white-space: nowrap;
-  max-width: calc(100% - 24px);
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  pointer-events: auto;      /* el chip sí es interactivo */
 }
 
 
