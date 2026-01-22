@@ -1065,10 +1065,32 @@ nav{ line-height: 1; }
 
 /* Si es button dentro de form */
 .pack-share-form{ margin:0; }
+
+/* Reset completo del botón-tarjeta para que sea idéntico al <a> */
 .pack-share-form .pack-share-card{
-  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+
   border: 0;
+  padding: 18px 14px 64px;   /* mismo padding que la tarjeta */
+  margin: 0;
+
+  width: 100%;
+  display: block;
+
+  text-align: inherit;
+  font: inherit;
+  line-height: inherit;
+
   cursor: pointer;
+}
+
+.pack-share-form .pack-share-card:hover{
+  transform: translateY(-2px);
+  filter: brightness(1.05);
 }
 
 /* Cabecera / título */
@@ -1088,18 +1110,31 @@ nav{ line-height: 1; }
   overflow-wrap: anywhere;
 }
 
-/* Emoji centrado */
+/* Emoji: zona central sin invadir título ni el hint */
 .pack-share-card__emoji{
   position: absolute;
-  inset: 0;
+  left: 0; right: 0;
+
+  top: 56px;        /* antes 40px -> más espacio para el título */
+  bottom: 64px;     /* deja espacio para el hint */
+
   display: grid;
   place-items: center;
+
   font-size: clamp(52px, 10vw, 84px);
   line-height: 1;
   filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
   pointer-events: none;
   z-index: 1;
 }
+
+/* En móviles, aún más margen porque el título puede partir en 2 líneas */
+@media (max-width: 520px){
+  .pack-share-card__emoji{
+    top: 66px;
+  }
+}
+
 
 /* Footer tipo “chip” centrado abajo */
 .pack-share-card__foot{
