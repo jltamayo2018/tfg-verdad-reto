@@ -12,6 +12,8 @@
 
   <!-- PANEL DERECHA / ABAJO -->
   <aside class="neon-card room-panel">
+
+    <!-- COPIAR ENLACE (MISMA LÍNEA + ICONO 📋) -->
     <div class="room-share-row">
       <span class="room-share__label">Copiar código sala →</span>
       <button type="button" id="btn-copy-link" class="btn-icon" aria-label="Copiar enlace">
@@ -79,7 +81,6 @@
   -------------------------- */
   const isHost    = JSON.parse('{{ is_host|yesno:"true,false"|escapejs }}');
   const questions = JSON.parse('{{ questions_json|escapejs }}');
-  console.log("questions", questions);
 
   // Precalcular índices por tipo
   const truthIndexes = [];
@@ -100,7 +101,6 @@
   const wsProtocol = location.protocol === "https:" ? "wss" : "ws";
   const wsURL = `${wsProtocol}://${location.host}/ws/rooms/{{ room.code }}/`;
   const ws = new WebSocket(wsURL);
-  console.log("WS URL:", wsURL);
 
   let currentIndex = 0;
 
@@ -110,12 +110,8 @@
   const btnTruth   = document.getElementById("btn-truth");
   const btnDare    = document.getElementById("btn-dare");
 
-  // NUEVO: escribir sobre el <span> para no romper el diseño
+  // Escribir sobre el <span> para no romper el diseño
   const elQuestionText = elBox ? elBox.querySelector(".question-text") : null;
-
-  // NUEVO: copiar enlace
-  const btnCopyRoom = document.getElementById("btn-copy-room");
-  const elCopyFeedback = document.getElementById("copy-feedback");
 
   function renderQuestion() {
     const target = elQuestionText || elBox;
@@ -133,42 +129,65 @@
     if (!isHost) return;
     if (!btnTruth || !btnDare) return;
 
-    // Activar/desactivar según haya preguntas de ese tipo
     btnTruth.disabled = (truthIndexes.length === 0);
     btnDare.disabled  = (dareIndexes.length === 0);
   }
 
   /* -------------------------
-     COPIAR ENLACE SALA
+     COPIAR ENLACE SALA (ROBUSTO)
   -------------------------- */
-  if (btnCopyRoom) {
-    btnCopyRoom.addEventListener("click", async () => {
-      const url = window.location.href;
+  const btnCopyLink = document.getElementById("btn-copy-link");
 
-      try {
+  function fallbackCopy(text) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-9999px";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    const ok = document.execCommand("copy");
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  async function copyRoomLink() {
+    const url = window.location.href;
+
+    let copied = false;
+
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(url);
-        if (elCopyFeedback) elCopyFeedback.textContent = "✅ Enlace copiado";
-        setTimeout(() => { if (elCopyFeedback) elCopyFeedback.textContent = ""; }, 1800);
-      } catch (e) {
-        // Fallback
-        const tmp = document.createElement("input");
-        tmp.value = url;
-        document.body.appendChild(tmp);
-        tmp.select();
-        document.execCommand("copy");
-        document.body.removeChild(tmp);
-
-        if (elCopyFeedback) elCopyFeedback.textContent = "✅ Enlace copiado";
-        setTimeout(() => { if (elCopyFeedback) elCopyFeedback.textContent = ""; }, 1800);
+        copied = true;
       }
-    });
+    } catch (e) {
+      copied = false;
+    }
+
+    if (!copied) {
+      copied = fallbackCopy(url);
+    }
+
+    if (btnCopyLink) {
+      const old = btnCopyLink.innerHTML;
+      btnCopyLink.innerHTML = copied
+        ? '<span class="btn-icon__emoji">✅</span>'
+        : '<span class="btn-icon__emoji">❌</span>';
+      setTimeout(() => (btnCopyLink.innerHTML = old), 900);
+    }
+  }
+
+  if (btnCopyLink) {
+    btnCopyLink.addEventListener("click", copyRoomLink);
   }
 
   /* -------------------------
      WS EVENTS
   -------------------------- */
   ws.onopen = () => {
-    console.log("WS OPEN");
     ws.send(JSON.stringify({ action: "join" }));
   };
 
@@ -181,7 +200,6 @@
   };
 
   function toggleNavButtons() {
-    // Solo el host puede usarlos, y solo cuando la sala esté en live
     const live = (elStatus.textContent || "").trim() === "live";
 
     if (btnTruth) btnTruth.style.display = (isHost ? "inline-block" : "none");
@@ -200,13 +218,10 @@
       renderQuestion();
       toggleNavButtons();
 
-      // si recargamos y la sala YA estaba live, ocultamos el botón
       if (isHost && btnStart && data.status === "live") {
         btnStart.style.display = "none";
       }
     }
-
-    console.log("WS MESSAGE", data);
 
     if (data.event === "new_question") {
       currentIndex = data.index;
@@ -214,7 +229,6 @@
       renderQuestion();
       toggleNavButtons();
 
-      // primera pregunta recibida ⇒ juego en marcha
       if (isHost && btnStart) {
         btnStart.style.display = "none";
       }
@@ -228,8 +242,6 @@
     btnStart.addEventListener("click", () => {
       ws.send(JSON.stringify({ action: "start" }));
       btnStart.style.display = "none";
-
-      // Cuando el juego empieza, activamos los botones según haya preguntas
       updateTypeButtons();
     });
   }

@@ -284,20 +284,20 @@ form.inline { display: inline; }
   overflow-wrap: anywhere;
 }
 
-/* --- EMOJI GRANDE CENTRADO (un poco más pequeño) --- */
+/* --- EMOJI GRANDE CENTRADO --- */
 .pack-card__emoji{
   position: absolute;
   inset: 0;
   display: grid;
   place-items: center;
-  font-size: clamp(52px, 10vw, 84px);    /* ↓ un poco más pequeño */
+  font-size: clamp(52px, 10vw, 84px);
   line-height: 1;
   filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
   pointer-events: none;
   z-index: 1;
 }
 
-/* --- ESTRELLAS (evitar solape con botones) --- */
+/* --- ESTRELLAS --- */
 .pack-card__level{
   position: absolute;
   left: 12px;
@@ -319,11 +319,11 @@ form.inline { display: inline; }
   .pack-card__level{
     font-size: 12px;
     padding: 3px 6px;
-    right: 92px;         /* un poquito más por seguridad */
+    right: 92px;
   }
 }
 
-/* --- HERRAMIENTAS ABAJO-DCHA (igual que tenías) --- */
+/* --- HERRAMIENTAS ABAJO-DCHA --- */
 .pack-tools{
   position:absolute;
   right:12px; bottom:12px;
@@ -332,11 +332,8 @@ form.inline { display: inline; }
   z-index:2;
 }
 
-/* por si quedaban estilos antiguos */
 .pack-name{ font-weight: 700; font-size: clamp(14px, 3.8vw, 18px); }
 .pack-meta{ display: none; }
-
-
 
 /* =========================
    HERO / PORTADA
@@ -919,12 +916,22 @@ nav{ line-height: 1; }
   }
 }
 
+#btn-start{
+  display: block;
+  margin: 0.75rem auto 0;
+}
+
 /* Botones navegación (o Verdad/Reto) */
-.room-nav-buttons {
+.room-nav-buttons{
   display: flex;
-  flex-wrap: wrap;
-  gap: .5rem;
+  justify-content: center;
+  gap: .75rem;
   margin-top: 1rem;
+}
+
+.room-nav-buttons .btn{
+  flex: 1;
+  max-width: 180px;
 }
 
 /* ====== COPIAR ENLACE SALA ====== */
