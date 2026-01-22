@@ -183,18 +183,12 @@
         </p>
 
         <div class="pack-share__copy">
-          <a id="share-link"
-            class="pack-share__url"
-            href="{% url 'publico_por_token' pack.token %}"
-            target="_blank" rel="noopener">
-            {% url 'publico_por_token' pack.token %}
-          </a>
-
           <button type="button"
-                  class="icon-btn pack-share__copybtn"
-                  id="copy-pack-link"
-                  title="Copiar enlace"
-                  aria-label="Copiar enlace">
+            class="icon-btn pack-share__copybtn"
+            id="copy-pack-link"
+            data-url="{% url 'publico_por_token' pack.token %}"
+            title="Copiar enlace"
+            aria-label="Copiar enlace">
             📋
           </button>
         </div>
@@ -266,9 +260,8 @@
   <script>
     (function () {
       const btn = document.getElementById('copy-pack-link');
-      const linkEl = document.getElementById('share-link');
       const toast = document.getElementById('packShareToast');
-      if (!btn || !linkEl) return;
+      if (!btn) return;
 
       function showToast(msg){
         if(!toast) return;
@@ -278,20 +271,19 @@
       }
 
       btn.addEventListener('click', async () => {
+        const rel = btn.dataset.url || "/";
+        const url = new URL(rel, window.location.origin).toString();
+
         try {
-          const url = new URL(linkEl.getAttribute('href'), window.location.origin).toString();
           await navigator.clipboard.writeText(url);
           btn.classList.add('is-active');
           setTimeout(() => btn.classList.remove('is-active'), 700);
           showToast("✅ Enlace copiado");
         } catch (e) {
-          // fallback simple
-          const fallbackUrl = new URL(linkEl.getAttribute('href'), window.location.origin).toString();
-          window.prompt("Copia el enlace:", fallbackUrl);
+          window.prompt("Copia el enlace:", url);
         }
       });
     })();
   </script>
-
 
 {% endblock %}
