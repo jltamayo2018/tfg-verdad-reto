@@ -225,16 +225,20 @@
         <!-- Regenerar enlace (POST) -->
         <form method="post"
               action="{% url 'link_regenerate' pack.pk %}"
-              class="pack-share-form"
+              class="pack-share-form pack-share-form--regen"
               onsubmit="return confirm('¿Regenerar enlace del pack? El anterior dejará de funcionar.');">
           {% csrf_token %}
-          <button type="submit" class="pack-share-card neon-card pack-share-card--danger">
-            <header class="pack-share-card__head">
-              <h4 class="pack-share-card__title">Regenerar</h4>
+
+          <button type="submit"
+                  class="pack-share-card neon-card pack-share-card--danger pack-share-card--regen">
+            <header class="pack-share-card__head pack-share-card__head--regen">
+              <h4 class="pack-share-card__title pack-share-card__title--regen">Regenerar</h4>
             </header>
-            <div class="pack-share-card__emoji" aria-hidden="true">🔁</div>
-            <div class="pack-share-card__foot">
-              <span class="pack-share-card__hint">Nuevo enlace</span>
+
+            <div class="pack-share-card__emoji pack-share-card__emoji--regen" aria-hidden="true">🔁</div>
+
+            <div class="pack-share-card__foot pack-share-card__foot--regen">
+              <span class="pack-share-card__hint pack-share-card__hint--regen">Nuevo enlace</span>
             </div>
           </button>
         </form>

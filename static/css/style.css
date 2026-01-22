@@ -1287,3 +1287,47 @@ nav{ line-height: 1; }
   opacity: .95;
 }
 
+/* =========================
+   FIX ESPECÍFICO: REGENERAR
+   (solo afecta al botón)
+========================= */
+
+/* Reseteo fuerte del botón para que se comporte como <a> */
+.pack-share-card--regen{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: rgba(255, 80, 80, 0.10); /* conserva danger aunque sea button */
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+
+  /* MUY IMPORTANTE: evita alineaciones raras del button */
+  display: block;
+  width: 100%;
+}
+
+/* Subimos el título ligeramente para que quede como las demás */
+.pack-share-card__head--regen{
+  margin-top: 0;                 /* neutraliza variaciones */
+  padding-top: 0;                /* por si algún reset mete padding */
+  transform: translateY(-6px);   /* <-- aquí lo subimos */
+}
+
+/* Aseguramos que el título no se tape con el emoji */
+.pack-share-card__title--regen{
+  position: relative;
+  z-index: 3;
+}
+
+/* El emoji un pelín más abajo para no “comerse” el título */
+.pack-share-card__emoji--regen{
+  transform: translateY(6px);
+}
+
+/* Por coherencia, mantenemos el pie igual */
+.pack-share-card__foot--regen{
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+}
