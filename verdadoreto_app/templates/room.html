@@ -13,7 +13,15 @@
   <!-- PANEL DERECHA / ABAJO -->
   <aside class="neon-card room-panel">
 
-    <h2 class="room-title">Sala: {{ room.code }}</h2>
+    <h2 class="room-title">Sala online</h2>
+
+    <div class="room-share">
+      <span class="room-share__label">Copiar código sala →</span>
+      <button id="btn-copy-room" type="button" class="btn btn-secondary btn-copy">
+        Copiar enlace
+      </button>
+    </div>
+    <small id="copy-feedback" class="copy-feedback" aria-live="polite"></small>
 
     <p><strong>Pack:</strong> {{ pack.name }}</p>
     <p><strong>Estado:</strong> <span id="room-status">{{ room.status }}</span></p>
@@ -106,13 +114,22 @@
   const btnTruth   = document.getElementById("btn-truth");
   const btnDare    = document.getElementById("btn-dare");
 
+  // NUEVO: escribir sobre el <span> para no romper el diseño
+  const elQuestionText = elBox ? elBox.querySelector(".question-text") : null;
+
+  // NUEVO: copiar enlace
+  const btnCopyRoom = document.getElementById("btn-copy-room");
+  const elCopyFeedback = document.getElementById("copy-feedback");
+
   function renderQuestion() {
+    const target = elQuestionText || elBox;
+
     if (questions.length && questions[currentIndex]) {
       const q = questions[currentIndex];
       const text = typeof q === "string" ? q : (q.text || JSON.stringify(q));
-      elBox.textContent = text;
+      target.textContent = text;
     } else {
-      elBox.textContent = `Pregunta #${currentIndex + 1}`;
+      target.textContent = `Pregunta #${currentIndex + 1}`;
     }
   }
 
@@ -123,6 +140,32 @@
     // Activar/desactivar según haya preguntas de ese tipo
     btnTruth.disabled = (truthIndexes.length === 0);
     btnDare.disabled  = (dareIndexes.length === 0);
+  }
+
+  /* -------------------------
+     COPIAR ENLACE SALA
+  -------------------------- */
+  if (btnCopyRoom) {
+    btnCopyRoom.addEventListener("click", async () => {
+      const url = window.location.href;
+
+      try {
+        await navigator.clipboard.writeText(url);
+        if (elCopyFeedback) elCopyFeedback.textContent = "✅ Enlace copiado";
+        setTimeout(() => { if (elCopyFeedback) elCopyFeedback.textContent = ""; }, 1800);
+      } catch (e) {
+        // Fallback
+        const tmp = document.createElement("input");
+        tmp.value = url;
+        document.body.appendChild(tmp);
+        tmp.select();
+        document.execCommand("copy");
+        document.body.removeChild(tmp);
+
+        if (elCopyFeedback) elCopyFeedback.textContent = "✅ Enlace copiado";
+        setTimeout(() => { if (elCopyFeedback) elCopyFeedback.textContent = ""; }, 1800);
+      }
+    });
   }
 
   /* -------------------------
