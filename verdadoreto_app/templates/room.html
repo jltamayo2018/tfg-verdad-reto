@@ -12,18 +12,14 @@
 
   <!-- PANEL DERECHA / ABAJO -->
   <aside class="neon-card room-panel">
-
-    <h2 class="room-title">Sala online</h2>
-
-    <div class="room-share">
+    <div class="room-share-row">
       <span class="room-share__label">Copiar código sala →</span>
-      <button id="btn-copy-room" type="button" class="btn btn-secondary btn-copy">
-        Copiar enlace
+      <button type="button" id="btn-copy-link" class="btn-icon" aria-label="Copiar enlace">
+        <span class="btn-icon__emoji">📋</span>
       </button>
     </div>
-    <small id="copy-feedback" class="copy-feedback" aria-live="polite"></small>
 
-    <p><strong>Pack:</strong> {{ pack.name }}</p>
+    <p><strong>Temática:</strong> {{ pack.name }}</p>
     <p><strong>Estado:</strong> <span id="room-status">{{ room.status }}</span></p>
 
     {% if is_host %}

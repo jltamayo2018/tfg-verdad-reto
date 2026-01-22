@@ -936,9 +936,47 @@ nav{ line-height: 1; }
   margin: .5rem 0 1rem;
 }
 
+.room-share-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  margin: .25rem 0 1rem;
+}
+
 .room-share__label{
   opacity: .9;
   font-weight: 600;
+}
+
+/* Botón tipo icono (estilo "píldora") */
+.btn-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width: 46px;
+  height: 40px;
+  padding: 0 .9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 220, 255, 0.55);
+  background: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 0 18px rgba(0, 220, 255, 0.22);
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.btn-icon:hover{
+  border-color: rgba(0, 220, 255, 0.9);
+  box-shadow: 0 0 22px rgba(0, 220, 255, 0.35);
+}
+
+.btn-icon:active{
+  transform: translateY(1px);
+}
+
+.btn-icon__emoji{
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 .btn-copy{
