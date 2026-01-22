@@ -1103,24 +1103,21 @@ nav{ line-height: 1; }
 .pack-share__row{
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap; /* si no cabe, baja el botón a la línea siguiente */
   margin-bottom: 14px;
 }
 
 .pack-share__lead{
   margin: 0;
-  line-height: 1.2;
-  white-space: nowrap;      /* mantiene en 1 línea */
-  overflow: hidden;
-  text-overflow: ellipsis;  /* por si algún móvil muy estrecho */
+  line-height: 1.3;
 }
 
 .pack-share__copy{
   display:flex;
   gap: 10px;
   align-items:center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 /* URL estilo badge propio */
@@ -1162,16 +1159,18 @@ nav{ line-height: 1; }
 /* TARJETA de acción: ahora con GRID (título arriba, icono centro, chip abajo) */
 .pack-share-card{
   position: relative;
-  display: block;
+  display: grid;
+  grid-template-rows: auto 1fr auto;  /* título / centro / pie */
+  align-items: stretch;
+  justify-items: center;
+
   aspect-ratio: 1 / 1;
   border-radius: 18px;
-
   padding: 14px;
   background: rgba(255,255,255,0.05);
   color:#fff;
   text-decoration:none;
   overflow: hidden;
-
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 
@@ -1192,6 +1191,9 @@ nav{ line-height: 1; }
   border: 0;
   margin: 0;
 
+  /* por seguridad: fuerza el mismo layout */
+  display: grid;
+
   background: rgba(255,255,255,0.05);
   color: #fff;
 
@@ -1209,13 +1211,18 @@ nav{ line-height: 1; }
 
 /* Cabecera / título */
 .pack-share-card__head{
-  position: relative;
-  z-index: 2;
   width: 100%;
   text-align: center;
+  z-index: 2;
+
+  /* 👇 clave: “zona” arriba consistente en móvil/escritorio */
+  min-height: clamp(42px, 7vw, 58px);
+
+  display: flex;
+  align-items: flex-start;   /* título arriba dentro de su zona */
+  justify-content: center;
 }
 
-/* Importante: evita que un título largo empuje el icono demasiado */
 .pack-share-card__title{
   margin: 0;
   font-weight: 800;
@@ -1228,49 +1235,36 @@ nav{ line-height: 1; }
 
 /* ICONO: SIEMPRE en el centro REAL de la tarjeta */
 .pack-share-card__emoji{
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-
-  font-size: clamp(44px, 12vw, 84px); /* más estable en móvil */
+  align-self: center;
+  justify-self: center;
+  font-size: clamp(52px, 10vw, 84px);
   line-height: 1;
   filter: drop-shadow(0 0 12px rgba(255,255,255,.18));
   pointer-events: none;
   z-index: 1;
 }
 
-/* Footer / chip (fila 3) — centrado abajo */
+/* FOOTER / CHIP abajo centrado */
 .pack-share-card__foot{
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 12px;
-  z-index: 2;
-
+  width: 100%;
   display: flex;
   justify-content: center;
-  pointer-events: none;
+  z-index: 2;
 }
 
 .pack-share-card__hint{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   background: rgba(0,0,0,.35);
   padding: 6px 14px;
   border-radius: 999px;
-
   font-size: 14px;
   opacity: .92;
-
   white-space: nowrap;
-  max-width: calc(100% - 24px);
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-
-  pointer-events: auto;
 }
 
 /* Variante peligro */
