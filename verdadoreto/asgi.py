@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 import os
 from django.core.asgi import get_asgi_application
 
+
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'verdadoreto.settings')
 django_asgi_app = get_asgi_application()
 
@@ -20,6 +21,7 @@ if settings.DEBUG:
     django_asgi_app = ASGIStaticFilesHandler(django_asgi_app)
 
 from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.sessions import SessionMiddlewareStack
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 from verdadoreto_app.consumers import RoomConsumer
@@ -27,10 +29,11 @@ from verdadoreto_app.consumers import RoomConsumer
 # Router principal: HTTP va a Django; WebSocket va a Channels (AuthMiddlewareStack + URLRouter)
 application = ProtocolTypeRouter({
     "http": django_asgi_app,
-    "websocket": AuthMiddlewareStack(
-        URLRouter([
-            # Ruta de WebSocket para las salas de juego
-            path("ws/rooms/<str:code>/", RoomConsumer.as_asgi()),
-        ])
+    "websocket": SessionMiddlewareStack(
+        AuthMiddlewareStack(
+            URLRouter([
+                path("ws/rooms/<str:code>/", RoomConsumer.as_asgi()),
+            ])
+        )
     ),
 })
