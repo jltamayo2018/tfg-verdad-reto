@@ -383,7 +383,6 @@ def create_room(request, pack_id):
     )
     return redirect("room_view", code=room.code)
 
-@login_required
 def room_view(request, code):
     room = get_object_or_404(VideoRoom, code=code)
 

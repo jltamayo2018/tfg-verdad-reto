@@ -146,3 +146,10 @@ Solucionadas las salas online mediante JaaS.
 Revisión de cosas a mejorar y testeo de las distintas páginas dentro de la Web
 
 20/01/2026
+
+Mejora en la página de inicio
+
+22/01/2026
+
+Mejoras estéticas en la página de detalles, específicamente la última sección de Compartir y Jugar.
+Mejoras estéticas en las Salas Online. Copiar enlace, mejoras visuales.
