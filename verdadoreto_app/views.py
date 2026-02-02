@@ -14,6 +14,7 @@ from .models import Action, Pack, PackCollaborator
 from .permissions import can_edit_pack
 from .models import VideoRoom, GameState, RoomParticipant
 from .jitsi import generate_jitsi_jwt
+from django.utils.crypto import get_random_string
 
 def home(request):
     return render(request, 'home.html')
@@ -384,22 +385,36 @@ def create_room(request, pack_id):
     return redirect("room_view", code=room.code)
 
 def room_view(request, code):
+
     room = get_object_or_404(VideoRoom, code=code)
-
-    # Registrar participante único
-    rp, _ = RoomParticipant.objects.get_or_create(
-        room=room,
-        user=request.user,
-        defaults={"display_name": request.user.username, "role": "player"},
-    )
-
-    is_host = (room.host_id == request.user.id)
     pack = room.pack
+
+    # Si el usuario está autenticado se usa su nombre y ID
+    if request.user.is_authenticated:
+        display_name = request.user.username
+        user_id = str(request.user.id)
+        is_host = (room.host_id == request.user.id)
+
+        # (opcional) registrar participante autenticado en BD
+        rp, _ = RoomParticipant.objects.get_or_create(
+            room=room,
+            user=request.user,
+            defaults={"display_name": display_name, "role": "player"},
+        )
+        display_name = rp.display_name
+
+    # Si es invitado, usar nombre de sesión o generar uno nuevo
+    else:
+        if not request.session.get("guest_name"):
+            request.session["guest_name"] = f"Invitado-{get_random_string(4).upper()}"
+        display_name = request.session["guest_name"]
+        user_id = f"guest-{request.session.session_key or get_random_string(12)}"
+        is_host = False
 
     # Generar el token JWT para Jitsi
     jitsi_token = generate_jitsi_jwt(
         room_name=room.code,
-        user_id=str(request.user.id),
+        user_id=user_id,
         display_name=rp.display_name,
         is_moderator=is_host,
     )
