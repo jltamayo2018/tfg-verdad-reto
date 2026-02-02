@@ -13,42 +13,20 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         self.code = self.scope["url_route"]["kwargs"]["code"]
         self.group = f"room_{self.code}"
 
-        user = self.scope.get("user", AnonymousUser())
-
-        # Identificador del usuario o invitado
-        
-        if user.is_authenticated:
-            self.participant_id = f"user_{user.id}"
-            self.user_id = user.id
-        else:
-            # Invitado: usamos la sesión
-            session = self.scope.get("session")
-            guest_id = session.get("guest_id")
-            if not guest_id:
-                guest_id = f"guest_{id(self)}"
-                session["guest_id"] = guest_id
-                session.save()
-
-            self.participant_id = guest_id
-            self.user_id = None
-
-
-        # si el usuario no está autenticado, se cierra la conexión, y no queremos eso
-        '''
-        user = self.scope.get("user", AnonymousUser())
-        if not user or user.is_anonymous:
-            await self.close(code=4401)  # unauthorized
-            return
-        '''
-
         # Verifica que la sala exista
         exists = await self.room_exists()
         if not exists:
             await self.close(code=4404)  # not found
             return
 
-        # Registrar participante (siempre)
-        await self.ensure_participant()
+        user = self.scope.get("user", AnonymousUser())
+
+        # ✅ Solo registramos participant si está autenticado
+        if user and user.is_authenticated:
+            self.user_id = user.id
+            await self.ensure_participant(user.id)
+        else:
+            self.user_id = None  # invitado
 
         logger.warning("CHANNEL LAYER in connect: %r", self.channel_layer)
         logger.warning("CHANNEL NAME: %r | GROUP: %r", self.channel_name, getattr(self, "group", None))
@@ -80,7 +58,6 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
         # Renovar TTL un poco y quizá borrar si queda vacía
         await self.extend_room_ttl(10)
-        await self.maybe_delete_if_empty()
         
         # Avisar a todos
         try:
@@ -95,35 +72,30 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         action = content.get("action")
         user = self.scope.get("user", AnonymousUser())
 
-        if user.is_anonymous:
-            # Invitados solo pueden recibir estado
-            return
-
-
+        # ✅ Invitados: permitimos join para mantener viva la sala
         if action == "join":
-            await self.ensure_participant()
             await self.extend_room_ttl(30)
             await self.channel_layer.group_send(self.group, {"type": "lobby_update"})
             return
 
-        elif action == "start":
-            # Solo el host puede iniciar
+        # ❌ Invitados no pueden controlar el juego
+        if not user or user.is_anonymous:
+            return
+
+        if action == "start":
             if await self.is_host(user.id):
                 await self.set_status("live")
                 await self.set_index(0)
                 await self.extend_room_ttl(30)
-                await self.channel_layer.group_send(
-                    self.group,
-                    {
-                        "type": "game_update",
-                        "event": "new_question",
-                        "index": 0,
-                    }
-                )
+                await self.channel_layer.group_send(self.group, {
+                    "type": "game_update",
+                    "event": "new_question",
+                    "index": 0,
+                })
             return
 
-        elif action == "next":
-            if await self.is_host(self.scope["user"].id):
+        if action == "next":
+            if await self.is_host(user.id):
                 try:
                     idx = max(0, int(content.get("index", 0)))
                 except (TypeError, ValueError):
@@ -131,15 +103,13 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
 
                 await self.set_index(idx)
                 await self.extend_room_ttl(30)
-                await self.channel_layer.group_send(
-                    self.group,
-                    {
-                        "type": "game_update",
-                        "event": "new_question",
-                        "index": idx,
-                    }
-                )
+                await self.channel_layer.group_send(self.group, {
+                    "type": "game_update",
+                    "event": "new_question",
+                    "index": idx,
+                })
             return
+
 
     # =====================
     # WS handlers
@@ -194,31 +164,18 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             pass
 
     @database_sync_to_async
-    def ensure_participant(self):
+    def ensure_participant(self, user_id: int):
         room = VideoRoom.objects.get(code=self.code)
+        role = "host" if room.host_id == user_id else "player"
 
-        if self.user_id:
-            role = "host" if room.host_id == self.user_id else "player"
-
-            RoomParticipant.objects.update_or_create(
-                room=room,
-                user_id=self.user_id,
-                defaults={
-                    "display_name": room.host.username if role == "host" else f"Jugador {self.user_id}",
-                    "role": role,
-                },
-            )
-        else:
-            # Invitado
-            RoomParticipant.objects.update_or_create(
-                room=room,
-                user=None,
-                defaults={
-                    "display_name": "Invitado",
-                    "role": "player",
-                },
-            )
-
+        RoomParticipant.objects.update_or_create(
+            room=room,
+            user_id=user_id,
+            defaults={
+                "display_name": room.host.username if role == "host" else f"Jugador {user_id}",
+                "role": role,
+            },
+        )
 
     @database_sync_to_async
     def remove_participant(self, user_id: int):

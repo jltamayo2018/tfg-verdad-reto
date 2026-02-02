@@ -389,44 +389,42 @@ def room_view(request, code):
     room = get_object_or_404(VideoRoom, code=code)
     pack = room.pack
 
-    # Si el usuario está autenticado se usa su nombre y ID
-    if request.user.is_authenticated:
-        display_name = request.user.username
-        user_id = str(request.user.id)
-        is_host = (room.host_id == request.user.id)
+    user = request.user
+    is_authenticated = user.is_authenticated
 
-        # (opcional) registrar participante autenticado en BD
+    # Si el usuario está autenticado se usa su nombre y ID
+    if is_authenticated:
+        # Participante real
         rp, _ = RoomParticipant.objects.get_or_create(
             room=room,
-            user=request.user,
-            defaults={"display_name": display_name, "role": "player"},
+            user=user,
+            defaults={"display_name": user.username, "role": "player"},
         )
         display_name = rp.display_name
+        user_id = str(user.id)
+        is_host = (room.host_id == user.id)
 
     # Si es invitado, usar nombre de sesión o generar uno nuevo
     else:
-        if not request.session.get("guest_name"):
-            request.session["guest_name"] = f"Invitado-{get_random_string(4).upper()}"
-        display_name = request.session["guest_name"]
-        user_id = f"guest-{request.session.session_key or get_random_string(12)}"
+        # Invitado: usamos sesión para tener id estable
+        if not request.session.session_key:
+            request.session.create()
+
+        user_id = f"guest-{request.session.session_key}"
+        # Puedes permitir cambiar el nombre con ?name=Pepe si quieres
+        display_name = request.GET.get("name") or "Invitado"
         is_host = False
 
     # Generar el token JWT para Jitsi
     jitsi_token = generate_jitsi_jwt(
         room_name=room.code,
         user_id=user_id,
-        display_name=rp.display_name,
+        display_name=display_name,
         is_moderator=is_host,
     )
 
-    # ------------------------------
-    # SERIALIZAR PREGUNTAS DEL PACK
-    # ------------------------------
-    actions = (
-        pack.actions
-        .filter(active=True)     # solo las activas
-        .order_by("id")          # orden estable
-    )
+    # serializamos las preguntas activas del pack
+    actions = (pack.actions.filter(active=True).order_by("id"))
 
     questions = [
         {
@@ -443,7 +441,7 @@ def room_view(request, code):
         "room": room,
         "pack": pack,
         "is_host": is_host,
-        "display_name": rp.display_name,
+        "display_name": display_name,
         "questions_json": questions_json,
         "jitsi_token": jitsi_token,
         "jitsi_app_id": settings.JITSI_APP_ID,
