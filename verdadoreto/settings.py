@@ -29,16 +29,12 @@ ALLOWED_HOSTS = [
     ".onrender.com",              # Render
     "tfg-verdad-reto.onrender.com",
     "verdadreto.onrender.com",
-    "verdadreto.es",              # tu dominio (cuando lo conectes)
-    "www.verdadreto.es",
     "localhost",
     "127.0.0.1",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.onrender.com",
-    "https://verdadreto.es",
-    "https://www.verdadreto.es",
 ]
 
 # Application definition
