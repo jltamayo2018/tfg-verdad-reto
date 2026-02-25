@@ -33,7 +33,7 @@
   <!-- COMPARTIR PACK (solo dueño) -->
   {% if user == pack.owner %}
   <div class="card neon-card share-box">
-    <h3>Compartir pack</h3>
+    <h3>Colaboradores y permisos</h3>
 
     <form method="post" action="{% url 'add_collaborator' pack.pk %}" class="form-grid">
       {% csrf_token %}
