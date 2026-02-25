@@ -999,11 +999,11 @@ nav{ line-height: 1; }
 }
 
 /* ====== VERDAD / RETO EN DOS COLUMNAS (TAMBIÉN EN MÓVIL) ====== */
-.room-nav-buttons{
+/*.room-nav-buttons{
   display: grid;
   align-items: center;
-  /*grid-template-columns: repeat(2, minmax(0, 180px)); /* ancho controlado */
-  justify-content: center;                           /* centra el grid */
+  grid-template-columns: repeat(2, minmax(0, 180px));
+  justify-content: center;
   gap: .75rem;
   margin-top: 1rem;
   width: 100%;
@@ -1012,6 +1012,7 @@ nav{ line-height: 1; }
 .room-nav-buttons .btn{
   width: 100%;
 }
+*/
 
 /* ====== PREGUNTA MÁS LEGIBLE ====== */
 .room-question-box{
@@ -1392,4 +1393,17 @@ nav{ line-height: 1; }
   display: grid;
   place-items: center;
   z-index: 3;
+}
+
+
+/* ===== VERDAD / RETO CENTRADOS PERFECTAMENTE ===== */
+.room-nav-buttons{
+  display: flex;              /* más simple y estable que grid */
+  justify-content: center;    /* centra horizontalmente */
+  gap: .75rem;
+  margin: 1rem 0 0;
+}
+
+.room-nav-buttons .btn{
+  width: 180px;               /* ancho fijo y simétrico */
 }
