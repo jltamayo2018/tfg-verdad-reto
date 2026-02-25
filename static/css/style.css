@@ -1001,16 +1001,19 @@ nav{ line-height: 1; }
 /* ====== VERDAD / RETO EN DOS COLUMNAS (TAMBIÉN EN MÓVIL) ====== */
 .room-nav-buttons{
   display: grid;
-  align-items: center;
-  grid-template-columns: repeat(2, minmax(0, 180px)); /* ancho controlado */
-  justify-content: center;                           /* centra el grid */
+  grid-template-columns: 180px 180px;  /* o 1fr 1fr si prefieres */
   gap: .75rem;
-  margin-top: 1rem;
-  width: 100%;
+
+  width: fit-content;                 /* el bloque mide “lo que ocupan” */
+  margin: 1rem auto 0;                /* centra el bloque en el panel */
 }
 
 .room-nav-buttons .btn{
-  width: 100%;
+  width: 180px;                       /* mismo ancho que la columna */
+}
+
+.room-nav-buttons{
+  outline: 3px solid red !important;
 }
 
 /* ====== PREGUNTA MÁS LEGIBLE ====== */
