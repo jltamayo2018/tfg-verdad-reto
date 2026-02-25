@@ -922,7 +922,7 @@ nav{ line-height: 1; }
 }
 
 /* Botones navegación (o Verdad/Reto) */
-.room-nav-buttons{
+/*.room-nav-buttons{
   display: flex;
   justify-content: center;
   gap: .75rem;
@@ -932,7 +932,7 @@ nav{ line-height: 1; }
 .room-nav-buttons .btn{
   flex: 1;
   max-width: 180px;
-}
+}*/
 
 /* ====== COPIAR ENLACE SALA ====== */
 .room-share{
@@ -1001,9 +1001,11 @@ nav{ line-height: 1; }
 /* ====== VERDAD / RETO EN DOS COLUMNAS (TAMBIÉN EN MÓVIL) ====== */
 .room-nav-buttons{
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 180px)); /* ancho controlado */
+  justify-content: center;                           /* centra el grid */
   gap: .75rem;
   margin-top: 1rem;
+  width: 100%;
 }
 
 .room-nav-buttons .btn{
