@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import Pack, Action, VideoRoom, RoomParticipant, GameState
 
+# Este fichero sirve para registrar tus modelos en el panel de administración de Django
+
 @admin.register(Pack)
 class PackAdmin(admin.ModelAdmin):
     list_display = ('name', 'owner', 'creation_date')

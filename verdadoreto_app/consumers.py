@@ -16,7 +16,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         # Verifica que la sala exista
         exists = await self.room_exists()
         if not exists:
-            await self.close(code=4404)  # not found
+            await self.close(code=4404)  # si no se encuentra la sala
             return
 
         user = self.scope.get("user", AnonymousUser())
@@ -163,6 +163,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         except VideoRoom.DoesNotExist:
             pass
 
+    # Función para asegurar que el participante exista o se cree al conectar, y para eliminarlo al desconectar
     @database_sync_to_async
     def ensure_participant(self, user_id: int):
         room = VideoRoom.objects.get(code=self.code)
