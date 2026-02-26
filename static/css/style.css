@@ -567,11 +567,6 @@ nav{ line-height: 1; }
 }
 
 /* =========================
-   BOTONES (global) — pequeño ajuste
-========================= */
-.btn-wide { width: 100%; max-width: 420px; } /* un pelín más ancho para móvil */
-
-/* =========================
    PÁGINA: PÚBLICO
 ========================= */
 /* Contenedor que ocupa la altura útil de móvil (restando aprox. la barra/nav) */
@@ -874,28 +869,31 @@ nav{ line-height: 1; }
   margin-top: 0;
 }
 
-/* Caja de pregunta */
-.room-question-box {
-  position: relative;
+/* ====== PREGUNTA MÁS LEGIBLE ====== */
+.room-question-box{
   min-height: 150px;
+  padding: 1.2rem 1.3rem;
   display: flex;
   align-items: center;
-  padding: 1.2rem 1.4rem;
+  position: relative;
 
-  /* TEXTO */
-  color: #ffffff;
+  /* TEXTO: fondo limpio y contraste alto */
   font-size: 1.1rem;
   font-weight: 500;
   line-height: 1.5;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85);
+  background: rgba(0,0,0,.55);
+  border: 1px solid rgba(255,255,255,.12);
+  backdrop-filter: blur(6px);
 
-  /* MUY IMPORTANTE */
+  color: #fff;
+  text-shadow: none;
+
   z-index: 1;
 }
 
 /* Fondo oscuro controlado */
 .room-question-box::after {
-  content: "";
+  content: none;
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -906,7 +904,6 @@ nav{ line-height: 1; }
   border-radius: inherit;
   z-index: -1; /* 👈 el fondo queda detrás del texto */
 }
-
 
 /* En móviles, un poco más grande para que se lea mejor */
 @media (max-width: 768px) {
@@ -920,19 +917,6 @@ nav{ line-height: 1; }
   display: block;
   margin: 0.75rem auto 0;
 }
-
-/* Botones navegación (o Verdad/Reto) */
-/*.room-nav-buttons{
-  display: flex;
-  justify-content: center;
-  gap: .75rem;
-  margin-top: 1rem;
-}
-
-.room-nav-buttons .btn{
-  flex: 1;
-  max-width: 180px;
-}*/
 
 /* ====== COPIAR ENLACE SALA ====== */
 .room-share{
@@ -998,50 +982,12 @@ nav{ line-height: 1; }
   margin-bottom: .5rem;
 }
 
-/* ====== VERDAD / RETO EN DOS COLUMNAS (TAMBIÉN EN MÓVIL) ====== */
-/*.room-nav-buttons{
-  display: grid;
-  align-items: center;
-  grid-template-columns: repeat(2, minmax(0, 180px));
-  justify-content: center;
-  gap: .75rem;
-  margin-top: 1rem;
-  width: 100%;
-}
-
-.room-nav-buttons .btn{
-  width: 100%;
-}
-*/
-
-/* ====== PREGUNTA MÁS LEGIBLE ====== */
-.room-question-box{
-  min-height: 150px;
-  padding: 1.2rem 1.3rem;
-  display: flex;
-  align-items: center;
-
-  /* fondo más limpio y contraste alto */
-  background: rgba(0,0,0,.55);
-  border: 1px solid rgba(255,255,255,.12);
-  backdrop-filter: blur(6px);
-
-  color: #fff;
-  text-shadow: none;
-}
-
-.room-question-box::after{
-  /* desactivamos el fondo anterior */
-  content: none;
-}
-
 .question-text{
   font-size: 1.15rem;
   font-weight: 650;
   line-height: 1.45;
   letter-spacing: .2px;
 }
-
 
 /* =========================
    HOME
@@ -1344,20 +1290,6 @@ nav{ line-height: 1; }
   left: 12px;
   right: 12px;
   bottom: 12px;
-}
-
-/* Asegura que el button no herede comportamientos raros (flex, etc.) */
-.pack-share-form--regen > .pack-share-card--regen{
-  display: block !important;
-  width: 100%;
-  border: 0;
-  outline: 0;
-  background: rgba(255, 80, 80, 0.10);
-  color: inherit;
-  font: inherit;
-  text-align: inherit;
-  appearance: none;
-  -webkit-appearance: none;
 }
 
 /* 🔒 TÍTULO ANCLADO ARRIBA */
