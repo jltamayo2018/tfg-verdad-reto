@@ -43,7 +43,7 @@ def pack_create(request):
         form = PackForm(request.POST)
         if form.is_valid():
             pack = form.save(commit=False)
-            pack.owner = request.user  # asignar el usuario actual como owner
+            pack.owner = request.user  # se asigna al usuario actual como dueño
             pack.save() # genera también los tokens
             messages.success(request, "Pack creado correctamente.")
             return redirect('pack_detail', pk=pack.pk)
@@ -71,7 +71,6 @@ def pack_edit(request, pk):
     else:
         form = PackForm(instance=pack)
 
-    # podemos reutilizar tu pack_form.html cambiando el título
     return render(request, 'pack_form.html', {
     'form': form,
     'pack': pack,
@@ -201,10 +200,10 @@ def action_delete(request, pk, action_id):
     })
 
 def publico_por_token(request, token):
-    # 1) Buscar el pack por el token único
+    # 1) Se busca el pack por el token
     pack = get_object_or_404(Pack, token=token)
     
-    # 2) Determinar el tipo según el parámetro GET (?t=verdad o ?t=reto)
+    # 2) Se determina el tipo de acción a mostrar según el parámetro GET 't' (verdad o reto)
     tipo_param = (request.GET.get('t') or '').lower()
     if tipo_param == 'reto':
         tipo = Action.Type.RETO
@@ -212,11 +211,11 @@ def publico_por_token(request, token):
         # por defecto mostramos 'Verdad'
         tipo = Action.Type.VERDAD
 
-    # 3) Elegir una acción aleatoria activa del tipo correspondiente
+    # 3) Se elige una acción aleatoria activa del tipo correspondiente
     actions = list(Action.objects.filter(pack=pack, type=tipo, active=True))
     action = random.choice(actions) if actions else None
 
-    # 4) Renderizar la plantilla pública
+    # 4) Se renderiza la plantilla pública
     return render(request, 'publico.html', {
         'pack': pack,
         'tipo': 'Verdad' if tipo == Action.Type.VERDAD else 'Reto',
@@ -261,7 +260,7 @@ def qr_image(request, pk, kind):
 
 @login_required
 def qr_image(request, pk):
-    # pack debe pertenecer al usuario logueado o ser colaborador
+    # el pack debe pertenecer al usuario logueado o ser colaborador
     pack = get_object_or_404(Pack, pk=pk)
     if not can_edit_pack(request.user, pack):
         return HttpResponseForbidden("No tienes permiso de administrador para este pack.")
@@ -269,7 +268,7 @@ def qr_image(request, pk):
     # URL pública con el token único
     public_url = request.build_absolute_uri(reverse('publico_por_token', args=[pack.token]))
 
-    # Generar QR en memoria con control de parámetros
+    # Se genera el QR en memoria con control de parámetros
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_M,
@@ -280,12 +279,12 @@ def qr_image(request, pk):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
 
-    # Guardar en buffer en memoria
+    # Se guarda en buffer en memoria
     buf = io.BytesIO()
     img.save(buf, format='PNG')
     buf.seek(0)
 
-    # Devolver PNG como descarga (Content-Disposition sugiere nombre de archivo)
+    # Se devuelve PNG como descarga (Content-Disposition sugiere nombre de archivo)
     resp = HttpResponse(buf.getvalue(), content_type='image/png')
     resp['Content-Disposition'] = f'attachment; filename="qr_pack{pack.pk}.png"'
     return resp

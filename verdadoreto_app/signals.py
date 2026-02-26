@@ -4,9 +4,9 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import transaction
-
 from .models import Pack, Action
 
+# Al crear un nuevo usuario, se le asignan automáticamente los packs predeterminados con sus respectivas acciones.
 User = get_user_model()
 
 DEFAULT_PACKS = [
