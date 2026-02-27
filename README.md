@@ -1,7 +1,51 @@
-# tfg-verdad-reto
-El proyecto consiste en el desarrollo de una aplicación web para implementar y gestionar el juego "Verdad o Reto". Los propios jugadores serán quienes creen los contenidos y participen en las pruebas. Como técnica principal para el intercambio de enlaces se utilizará la generación y el escaneo de códigos QR.
+# Verdad o Reto - Versión Web Interactiva
 
-20/09/2025
+El proyecto consiste en el desarrollo de una aplicación web para implementar y gestionar el juego "Verdad o Reto", desarrollada como Trabajo Fin de Grado en Ingeniería Telemática (URJC, 2025/2026).
+
+La aplicación permite jugar tanto de forma presencial como remota mediante salas online. Los propios jugadores serán quienes creen los contenidos y participen en el juego.
+
+---
+
+## 🌐 Demo
+
+Aplicación desplegada en producción:
+https://verdadreto.onrender.com
+
+---
+
+## 🚀 Funcionalidades
+
+- Creación y gestión de packs personalizados
+- Sistema de colaboración con permisos de lectura y edición
+- Acceso público mediante enlace y código QR
+- Salas online con sincronización en tiempo real
+- Videocomunicación integrada
+- Diseño responsive
+
+---
+
+## 🛠 Tecnologías utilizadas
+
+- Python
+- Django
+- Django Channels
+- PostgreSQL
+- Redis
+- HTML, CSS y JavaScript
+- Render (despliegue en la nube)
+
+---
+
+## 🏗 Arquitectura
+
+La aplicación sigue el patrón MVT de Django.  
+La comunicación en tiempo real se implementa mediante Django Channels utilizando Redis como backend.  
+El despliegue se realiza en Render con base de datos PostgreSQL gestionada.
+
+
+
+
+<!--20/09/2025
 
 Creo el repositorio y lo clono en mi pc.
 python -m venv entornoVirtual-VR -> para la creación del entorno virtual
@@ -153,3 +197,4 @@ Mejora en la página de inicio
 
 Mejoras estéticas en la página de detalles, específicamente la última sección de Compartir y Jugar.
 Mejoras estéticas en las Salas Online. Copiar enlace, mejoras visuales.
+-->
