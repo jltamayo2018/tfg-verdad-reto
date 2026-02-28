@@ -26,13 +26,5 @@ handler500 = "verdadoreto_app.views.handler500"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('verdadoreto_app.urls')),
-
-    # Sobrescribe SOLO esta para que no rompa si no hay SMTP configurado
-    path(
-        'accounts/password_reset/',
-        auth_views.PasswordResetView.as_view(fail_silently=True),
-        name='password_reset'
-    ),
-
     path('accounts/', include('django.contrib.auth.urls')),
 ]
