@@ -1,6 +1,6 @@
 from django import forms
 from .models import Pack, Action, PackCollaborator
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, UserCreationForm
 
 class PackForm(forms.ModelForm):
     LEVEL_CHOICES = [
@@ -73,3 +73,22 @@ class AddCollaboratorForm(forms.Form):
             raise forms.ValidationError("Ese usuario no existe.")
         cleaned['target_user'] = user
         return cleaned
+
+# Cambia el formulario de registro para incluir el email (opcional pero recomendado)
+class CustomUserCreationForm(UserCreationForm):
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={"placeholder": "tu@email.com"}),
+        help_text="Recomendado: necesario para recuperar la contraseña."
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ("username", "email", "password1", "password2")
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.email = self.cleaned_data.get("email", "")
+        if commit:
+            user.save()
+        return user

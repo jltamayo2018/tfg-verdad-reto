@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.http import Http404, HttpResponseForbidden
 from django.conf import settings
 from django.db.models import OuterRef, Subquery
-from .forms import PackForm, ActionForm, AddCollaboratorForm
+from .forms import PackForm, ActionForm, AddCollaboratorForm, CustomUserCreationForm
 from .models import Action, Pack, PackCollaborator
 from .permissions import can_edit_pack
 from .models import VideoRoom, GameState, RoomParticipant
@@ -21,12 +21,12 @@ def home(request):
 
 def registro(request):
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')  # a /accounts/login/
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'registration/register.html', {"form": form})
 
 @login_required

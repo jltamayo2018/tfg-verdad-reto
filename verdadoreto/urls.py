@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 handler400 = "verdadoreto_app.views.handler400"
 handler403 = "verdadoreto_app.views.handler403"
@@ -25,5 +26,13 @@ handler500 = "verdadoreto_app.views.handler500"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('verdadoreto_app.urls')),
+
+    # Sobrescribe SOLO esta para que no rompa si no hay SMTP configurado
+    path(
+        'accounts/password_reset/',
+        auth_views.PasswordResetView.as_view(fail_silently=True),
+        name='password_reset'
+    ),
+
     path('accounts/', include('django.contrib.auth.urls')),
 ]
