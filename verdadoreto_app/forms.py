@@ -80,7 +80,7 @@ class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(
         required=False,
         widget=forms.EmailInput(attrs={"placeholder": "tu@email.com"}),
-        help_text="Recomendado: necesario para recuperar la contraseña."
+        help_text="(Opcional. Necesario para poder recuperar la contraseña)"
     )
 
     class Meta(UserCreationForm.Meta):
